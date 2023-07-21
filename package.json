@@ -1,0 +1,37 @@
+{
+  "name": "ascend-backend-api",
+  "version": "0.0.1",
+  "description": "ascend backend api",
+  "repository": "https://github.com/AscendHQ/ascend-backend-api.git",
+  "author": "Innextinit <innextinit@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/morgan": "^1.9.4",
+    "axios": "^0.27.2",
+    "celebrate": "^12.2.0",
+    "connect-mongo": "^5.0.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "date-fns": "^2.28.0",
+    "debug": "~4.3.4",
+    "dotenv": "^16.0.1",
+    "express": "~4.18.1",
+    "express-session": "^1.17.3",
+    "express-validator": "^7.0.1",
+    "mongodb": "^5.4.0",
+    "mongoose": "^6.4.0",
+    "morgan": "^1.10.0",
+    "nanoid": "^3.1.30"
+  },
+  "devDependencies": {
+    "@types/connect-mongo": "^3.1.3",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/express-session": "^1.17.4",
+    "@types/node": "^18.0.1",
+    "@types/nodemon": "^1.19.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.7.4"
+  }
+}
