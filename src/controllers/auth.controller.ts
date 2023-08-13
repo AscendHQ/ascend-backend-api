@@ -1,57 +1,131 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../utils/responseHandler";
+import {
+  SystemAccountSignup,
+  CreateAccount,
+  AccountLogin,
+  ResetPassword,
+  ForgotPassword,
+  ChangePassword,
+  SendEmailVerification,
+  VerifyEmail,
+  AccountExists,
+} from "../services/auth.services";
+import { CreateOrganization } from "../services/organization.services";
 
-export const systemAccountSignUp = (req: Request, res: Response) => {
+export const systemAccountSignUp = async (req: Request, res: Response) => {
   try {
+    let { email, password, first_name, last_name } = req.body;
+
+    email = email.toLowerCase();
+
+    const response = await SystemAccountSignup({
+      email,
+      password,
+      first_name,
+      last_name,
+    });
+
+    return successResponse(res, 201, response);
+  } catch (error: any) {
+    return errorResponse(res, 500, error.message);
+  }
+};
+
+export const signUpOrganization = async (req: Request, res: Response) => {
+  try {
+    let { organization_name, email, password, first_name, last_name } =
+      req.body;
+
+    email = email.toLowerCase();
+
+    const organization = await CreateOrganization({
+      name: organization_name,
+    });
+
+    const response = await CreateAccount({
+      first_name,
+      last_name,
+      password,
+      email,
+      organization: organization._id,
+    });
+
+    return successResponse(res, 200, response);
+  } catch (error: any) {
+    return errorResponse(res, 500, error.message);
+  }
+};
+
+export const accountLogin = async (req: Request, res: Response) => {
+  try {
+    let { email, password } = req.body;
+
+    email = email.toLowerCase();
+
+    const response = await AccountLogin(email, password);
     return successResponse(res, 200);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
 };
 
-export const signUpOrganization = (req: Request, res: Response) => {
+export const accountEmailExists = async (req: Request, res: Response) => {
   try {
-    return successResponse(res, 200);
+    let { email } = req.query;
+
+    email = (email as string).toLowerCase();
+
+    const response = await AccountExists(email || "");
+
+    return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
 };
 
-export const accountLogin = (req: Request, res: Response) => {
+export const accountEmailVerification = async (req: Request, res: Response) => {
   try {
-    return successResponse(res, 200);
+    const { tkn } = req.query;
+
+    const response = await VerifyEmail(tkn as unknown as string);
+
+    return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
 };
 
-export const accountEmailExists = (req: Request, res: Response) => {
+export const sendEmailVerification = async (req: Request, res: Response) => {
   try {
-    return successResponse(res, 200);
+    let { email } = req.body;
+
+    email = (email as string).toLowerCase();
+
+    await SendEmailVerification(email);
+
+    return successResponse(res, 200, "Verification link sent");
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
 };
 
-export const accountEmailVerification = (req: Request, res: Response) => {
+export const changePassword = async (req: Request, res: Response) => {
   try {
-    return successResponse(res, 200);
-  } catch (error: any) {
-    return errorResponse(res, 500, error.message);
-  }
-};
+    const { account } = req;
+    const { old_password, new_password, confirm_password } = req.body;
 
-export const sendEmailVerification = (req: Request, res: Response) => {
-  try {
-    return successResponse(res, 200);
-  } catch (error: any) {
-    return errorResponse(res, 500, error.message);
-  }
-};
+    if (new_password !== confirm_password) {
+      return errorResponse(res, 400, "Passwords do not match");
+    }
 
-export const changePassword = (req: Request, res: Response) => {
-  try {
-    return successResponse(res, 200);
+    const response = await ChangePassword(
+      old_password,
+      new_password,
+      account.account_id
+    );
+
+    return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
@@ -59,15 +133,26 @@ export const changePassword = (req: Request, res: Response) => {
 
 export const forgetPassword = (req: Request, res: Response) => {
   try {
-    return successResponse(res, 200);
+    let { email } = req.body;
+
+    email = (email as string).toLowerCase();
+
+    ForgotPassword(email);
+
+    return successResponse(res, 200, "Password reset email sent");
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
 };
 
-export const resetPassword = (req: Request, res: Response) => {
+export const resetPassword = async (req: Request, res: Response) => {
   try {
-    return successResponse(res, 200);
+    const { tkn } = req.query;
+    const { password } = req.body;
+
+    const response = await ResetPassword(tkn as unknown as string, password);
+
+    return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }

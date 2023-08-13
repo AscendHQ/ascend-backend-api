@@ -1,9 +1,9 @@
-import { IUserAuthInfoRequest } from "../../interface";
+import { IAccountAuthInfoRequest } from "../../interface";
 
 declare global {
   export namespace Express {
     interface Request {
-      user: IUserAuthInfoRequest;
+      account: IAccountAuthInfoRequest;
     }
   }
 }

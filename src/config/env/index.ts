@@ -16,4 +16,7 @@ export const config: EnvConfigType = {
   PORT: envVariables.PORT,
   LOCAL_PORT: envVariables.LOCAL_PORT,
   JWT_SECRET: envVariables.JWT_SECRET,
+  TOKEN_EXPIRES_TIME: envVariables.TOKEN_EXPIRES_TIME,
+  FRONTEND_RESET_PASSWORD_URL: envVariables.FRONTEND_RESET_PASSWORD_URL,
+  FRONTEND_VERIFY_URL: envVariables.FRONTEND_VERIFY_URL,
 };

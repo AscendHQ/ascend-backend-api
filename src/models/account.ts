@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { IAccount, IAccountDocument } from "../interface";
+import { ESystemAccessLevel, IAccount, IAccountDocument } from "../interface";
 
 const accountSchemaFields: Record<keyof IAccount, any> = {
   first_name: { type: String },
@@ -11,6 +11,12 @@ const accountSchemaFields: Record<keyof IAccount, any> = {
     ref: "organization",
     required: true,
   },
+  access_level: { type: Number, default: ESystemAccessLevel.NORMAL_USER },
+  is_email_verified: { type: Boolean, default: false },
+  is_verified: { type: Boolean, default: false },
+  verification_token: { type: String },
+  token_validity: { type: Date },
+  last_login: { type: Date },
 };
 
 const accountSchema = new Schema(accountSchemaFields, {

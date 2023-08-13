@@ -4,4 +4,7 @@ export type EnvConfigType = {
   PORT: number;
   LOCAL_PORT: number;
   JWT_SECRET: string;
+  TOKEN_EXPIRES_TIME: string;
+  FRONTEND_RESET_PASSWORD_URL: string;
+  FRONTEND_VERIFY_URL: string;
 };

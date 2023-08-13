@@ -12,6 +12,7 @@ export interface IOrganization {
     zip_code: string;
     country: string;
   };
+  is_verified: boolean;
 }
 
 export interface IOrganizationDocument extends IOrganization, Document {}

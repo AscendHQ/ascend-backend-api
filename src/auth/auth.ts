@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ESystemAccessLevel, IUserAuthInfoRequest } from "../interface";
+import { ESystemAccessLevel, IAccountAuthInfoRequest } from "../interface";
 import { verify } from "jsonwebtoken";
 import { errorResponse } from "../utils/responseHandler";
 import { config } from "../config/env";
@@ -14,7 +14,7 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
       if (err) {
         return errorResponse(res, 403, "invalid token");
       }
-      req.user = decoded as IUserAuthInfoRequest;
+      req.account = decoded as IAccountAuthInfoRequest;
       return next();
     });
   } else {
@@ -27,7 +27,7 @@ export const isEmailVerified = (
   res: Response,
   next: NextFunction
 ) => {
-  const { user } = req;
+  const { account: user } = req;
 
   if (!user.is_email_verified) {
     return errorResponse(res, 401, "Email not verified");
@@ -41,7 +41,7 @@ export const isAscendAdmin = (
   res: Response,
   next: NextFunction
 ) => {
-  const { user } = req;
+  const { account: user } = req;
 
   if (user.access_level < ESystemAccessLevel.READ_ADMIN)
     return errorResponse(res, 401, "Unauthorized");

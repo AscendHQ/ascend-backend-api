@@ -2,7 +2,7 @@ import { model, Schema } from "mongoose";
 import { IOrganization, IOrganizationDocument } from "../interface";
 
 const organizationSchemaFields: Record<keyof IOrganization, any> = {
-  name: { type: String },
+  name: { type: String, required: true },
   description: { type: String },
   organization_logo: {
     path: { type: String },
@@ -13,6 +13,7 @@ const organizationSchemaFields: Record<keyof IOrganization, any> = {
     zip_code: { type: String },
     country: { type: String },
   },
+  is_verified: { type: Boolean },
 };
 
 const organizationSchema = new Schema(organizationSchemaFields, {
