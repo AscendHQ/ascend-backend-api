@@ -1,3 +1,4 @@
+import { Document } from "mongoose";
 import { IClass } from "./class.interface";
 import { IOrganization } from "./organization.interface";
 import { IStaff } from "./staff.interface";
@@ -15,15 +16,19 @@ export enum ELessonStatus {
 }
 
 export interface ILesson {
+  organization: string | IOrganization;
   title: string;
   subject: string;
   class: Array<string | IClass>;
-  duration_number: number;
-  duration: ELessonDuration;
+  duration: {
+    number: number;
+    period: ELessonDuration;
+  };
   lesson_plan: string;
   objectives: string;
   staff: string | IStaff;
   status: ELessonStatus;
   session: string;
-  organization: string | IOrganization;
 }
+
+export interface ILessonDocument extends ILesson, Document {}

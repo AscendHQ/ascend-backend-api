@@ -10,6 +10,8 @@ export interface IPermissionList {
 }
 
 export interface IPermissions {
+  organization: string | IOrganization;
+  staff: string | IStaff;
   dashboard: IPermissionList;
   students: IPermissionList;
   subjects: IPermissionList;
@@ -21,8 +23,6 @@ export interface IPermissions {
   results: IPermissionList;
   administration: IPermissionList;
   payroll: IPermissionList;
-  organization: string | IOrganization;
-  staff: string | IStaff;
 }
 
 export interface IPermissionsDocument extends IPermissions, Document {}

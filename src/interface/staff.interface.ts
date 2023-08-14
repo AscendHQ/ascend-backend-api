@@ -28,7 +28,7 @@ export interface IStaffBioData {
   staff_id: string;
   last_name: string;
   first_name: string;
-  dob: string;
+  dob: Date;
   gender: EGender;
   phone_number: string;
   address: IAddress;
@@ -50,11 +50,12 @@ export interface IStaffOfficialInformation {
 }
 
 export interface IStaff {
-  bio_data: IStaffBioData;
-  official_information: IStaffOfficialInformation;
-  permissions: IPermissions;
   organization: string | IOrganization;
   account?: string | IAccount;
+  permissions: string | IPermissions;
+  bio_data: IStaffBioData;
+  official_information: IStaffOfficialInformation;
+  is_active: boolean;
 }
 
 export interface IStaffDocument extends IStaff, Document {}

@@ -1,4 +1,6 @@
-import { EGender } from "./staff.interface";
+import { Document } from "mongoose";
+import { EGender, IStaff } from "./staff.interface";
+import { IOrganization } from "./organization.interface";
 
 export enum EHostelRoomType {
   SINGLE = "single",
@@ -32,8 +34,9 @@ export enum ERoomFeePaymentPeriod {
 }
 
 export interface IHostels {
+  organization: string | IOrganization;
   name: string;
-  staff: string;
+  staff: Array<string | IStaff>;
   capacity: number;
   number_of_students: number;
   gender: EGender;
@@ -45,3 +48,5 @@ export interface IHostels {
   room_fee_payment_period: ERoomFeePaymentPeriod;
   is_active: boolean;
 }
+
+export interface IHostelsDocument extends IHostels, Document {}
