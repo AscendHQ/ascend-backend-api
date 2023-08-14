@@ -1,3 +1,4 @@
+import { Document } from "mongoose";
 import { IClass } from "./class.interface";
 import { IHostels } from "./hostel.interface";
 import { ILesson } from "./lesson.interface";
@@ -19,8 +20,8 @@ export interface IStudent {
   academic_details: {
     class: string | IClass;
     previous_school: string;
-    enrollment_year: Date;
-    graduation_year: Date;
+    enrollment_year: string;
+    graduation_year: string;
     awards: string[];
     leadership_role: string;
     extra_curricular: string[];
@@ -54,7 +55,11 @@ export interface IStudent {
   hostel: {
     hostel_id: string | IHostels;
     block: string;
-    room: number | string;
+    room: string;
   };
   organization: string | IOrganization;
+  is_active: boolean;
+  registration_number: string;
 }
+
+export interface IStudentDocument extends IStudent, Document {}

@@ -55,7 +55,7 @@ export interface IStaff {
   permissions: string | IPermissions;
   bio_data: IStaffBioData;
   official_information: IStaffOfficialInformation;
-  is_active: boolean;
+  is_active?: boolean;
 }
 
 export interface IStaffDocument extends IStaff, Document {}
