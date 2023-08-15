@@ -10,11 +10,9 @@ const classSchemaFields: Record<keyof IClass, any> = {
   name: { type: String },
   size: { type: Number, default: 0 },
   session: { type: String },
-  term: {
-    type: String,
-    enum: EClassTerm,
-    default: EClassTerm.FIRST_TERM,
-  },
+  class_teacher: { type: Schema.Types.ObjectId, ref: "staff" },
+  students: [{ type: Schema.Types.ObjectId, ref: "student" }],
+  additional_notes: { type: String },
 };
 
 const classSchema = new Schema(classSchemaFields, {

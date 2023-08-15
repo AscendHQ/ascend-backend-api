@@ -8,8 +8,8 @@ import {
   getClassById,
   updateClassById,
   deleteClassById,
-  addStudentToClass,
 } from "../controllers/class.controller";
+import { csvUpload } from "../middlewares/csvUpload";
 
 const router = Router();
 
@@ -17,14 +17,12 @@ router.get("/", auth, isAscendAdmin, getAllClasses);
 
 router.post("/", auth, addClass);
 
-router.post("/bulk_add", auth, bulkAddClasses);
+router.post("/bulk_add", auth, csvUpload, bulkAddClasses);
 
 router.get("/:class_id", auth, getClassById);
 
 router.put("/:class_id", auth, updateClassById);
 
 router.delete("/:class_id", auth, deleteClassById);
-
-router.post("/:class_id/", auth, addStudentToClass);
 
 export default router;

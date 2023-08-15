@@ -1,5 +1,7 @@
 import { Document } from "mongoose";
 import { IOrganization } from "./organization.interface";
+import { IStaff } from "./staff.interface";
+import { IStudent } from "./student.interface";
 
 export enum EClassTerm {
   FIRST_TERM = "first_term",
@@ -12,7 +14,9 @@ export interface IClass {
   name: string;
   size: number;
   session: string;
-  term: EClassTerm;
+  class_teacher: string | IStaff;
+  students: Array<string | IStudent>;
+  additional_notes: string;
 }
 
 export interface IClassDocument extends IClass, Document {}
