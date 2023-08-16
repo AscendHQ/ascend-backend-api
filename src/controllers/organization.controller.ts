@@ -5,6 +5,7 @@ import {
   DeleteOrganization,
   GetAllOrganization,
   GetOrganizationById,
+  InviteStaffToOrganization,
   UpdateOrganization,
 } from "../services/organization.services";
 
@@ -66,6 +67,38 @@ export const deleteOrg = async (req: Request, res: Response) => {
     const { org_id } = req.params;
 
     const response = await DeleteOrganization(org_id);
+    return successResponse(res, 200, response);
+  } catch (error: any) {
+    return errorResponse(res, 500, error.message);
+  }
+};
+
+export const inviteStaffToOrg = async (req: Request, res: Response) => {
+  try {
+    let {
+      email,
+      last_name,
+      first_name,
+      dob,
+      gender,
+      phone_number,
+      address,
+      next_of_kin,
+    } = req.body;
+
+    email = email.toLowerCase();
+
+    // check if having access
+    const response = await InviteStaffToOrganization({
+      email,
+      last_name,
+      first_name,
+      dob,
+      gender,
+      phone_number,
+      address,
+      next_of_kin,
+    });
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);

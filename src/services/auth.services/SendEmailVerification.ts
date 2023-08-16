@@ -1,6 +1,6 @@
 import { config } from "../../config/env";
-import { genValidationNumber } from "../../utils/genRandomCode";
 import accountModel from "../../models/account";
+import genRandomCode from "../../utils/genRandomCode";
 const { FRONTEND_VERIFY_URL } = config;
 
 export const SendEmailVerification = async (email: string) => {
@@ -8,7 +8,7 @@ export const SendEmailVerification = async (email: string) => {
 
   if (!user) throw new Error("Invalid email address");
 
-  const verification_token = genValidationNumber(4);
+  const verification_token = genRandomCode(4);
 
   // send email
 
