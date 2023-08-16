@@ -35,13 +35,23 @@ app.use(express.json({ limit: "50mb" }));
 
 // import routers
 import authRouter from "./routes/auth";
-import organizationRouter from "./routes/organization";
 import accountRouter from "./routes/account";
+import organizationRouter from "./routes/organization";
+import classRouter from "./routes/class";
+import hostelRouter from "./routes/hostel";
+import lessonRouter from "./routes/lesson";
+import staffRouter from "./routes/staff";
+import studentRouter from "./routes/student";
 
 // use routers
 app.use("/auth", authRouter);
 app.use("/orgs", organizationRouter);
-app.use("/account", accountRouter);
+app.use("/accounts", accountRouter);
+app.use("/classes", classRouter);
+app.use("/hostels", hostelRouter);
+app.use("/lessons", lessonRouter);
+app.use("/staffs", staffRouter);
+app.use("/students", studentRouter);
 
 app.use("*", (req: Request, res: Response) => {
   const path = req.originalUrl;

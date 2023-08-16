@@ -1,10 +1,24 @@
 import { Router } from "express";
 import validateBody from "../utils/bodyValidator";
 import { auth, isAscendAdmin } from "../auth/auth";
-import { addStaff } from "../controllers/staff.controller";
+import {
+  getAllStaff,
+  addStaff,
+  getStaffById,
+  updateStaffById,
+  deleteStaffById,
+} from "../controllers/staff.controller";
 
 const router = Router();
 
+router.get("/", auth, isAscendAdmin, getAllStaff);
+
 router.post("/", auth, addStaff);
+
+router.get("/:staff_id", auth, getStaffById);
+
+router.put("/:staff_id", auth, updateStaffById);
+
+router.delete("/:staff_id", auth, deleteStaffById);
 
 export default router;
