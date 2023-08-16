@@ -19,6 +19,10 @@ export const systemAccountSignUp = async (req: Request, res: Response) => {
 
     email = email.toLowerCase();
 
+    if (await AccountExists(email)) {
+      return errorResponse(res, 409, "Conflicting data");
+    }
+
     const response = await SystemAccountSignup({
       email,
       password,
@@ -38,6 +42,10 @@ export const signUpOrganization = async (req: Request, res: Response) => {
       req.body;
 
     email = email.toLowerCase();
+
+    if (await AccountExists(email)) {
+      return errorResponse(res, 409, "Conflicting data");
+    }
 
     const organization = await CreateOrganization({
       name: organization_name,
@@ -64,7 +72,7 @@ export const accountLogin = async (req: Request, res: Response) => {
     email = email.toLowerCase();
 
     const response = await AccountLogin(email, password);
-    return successResponse(res, 200);
+    return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
