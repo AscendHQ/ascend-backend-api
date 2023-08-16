@@ -1,11 +1,11 @@
 import { addMinutes } from "date-fns";
 import { config } from "../../config/env";
 import AccountModel from "../../models/account";
-import { genValidationNumber } from "../../utils/genRandomCode";
+import genRandomCode from "../../utils/genRandomCode";
 const { FRONTEND_RESET_PASSWORD_URL } = config;
 
 export const ForgotPassword = async (email: string) => {
-  const token = genValidationNumber(4);
+  const token = genRandomCode(4);
 
   const link = `${FRONTEND_RESET_PASSWORD_URL}?tkn=${token}`;
 

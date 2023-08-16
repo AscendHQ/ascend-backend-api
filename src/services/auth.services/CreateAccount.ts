@@ -2,11 +2,11 @@ import { hash } from "bcryptjs";
 import { UpdateQuery } from "mongoose";
 import { IAccount } from "../../interface";
 import AccountModel from "../../models/account";
-import { genRandomAlphabetCode } from "../../utils/genRandomCode";
+import genRandomCode from "../../utils/genRandomCode";
 
 export const CreateAccount = async (payload: UpdateQuery<IAccount>) => {
   const hash_password = await hash(payload.password, 10);
-  const verification_token = genRandomAlphabetCode(8);
+  const verification_token = genRandomCode(8, "alphabet");
 
   const account = await AccountModel.create({
     ...payload,

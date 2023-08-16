@@ -3,11 +3,11 @@ import { UpdateQuery } from "mongoose";
 import { SignToken } from "./SignToken";
 import { IAccount } from "../../interface";
 import AccountModel from "../../models/account";
-import { genValidationNumber } from "../../utils/genRandomCode";
+import genRandomCode from "../../utils/genRandomCode";
 
 export const SystemAccountSignup = async (payload: UpdateQuery<IAccount>) => {
   const hash_password = await hash(payload.password, 10);
-  const verification_token = genValidationNumber(4);
+  const verification_token = genRandomCode(4);
 
   const account = await AccountModel.create({
     ...payload,

@@ -5,6 +5,10 @@
   "repository": "https://github.com/AscendHQ/ascend-backend-api.git",
   "author": "Innextinit <innextinit@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "yarn tsc && node ./dist/server",
+    "dev": "ts-node-dev --respawn --pretty --transpile-only ./src/server"
+  },
   "dependencies": {
     "@types/morgan": "^1.9.4",
     "axios": "^0.27.2",
@@ -25,7 +29,7 @@
     "mongoose": "^6.4.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "nanoid": "^4.0.2"
+    "nanoid": "^3.1.30"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
