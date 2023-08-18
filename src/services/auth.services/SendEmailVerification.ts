@@ -1,12 +1,10 @@
 import { config } from "../../config/env";
 import accountModel from "../../models/account";
 import genRandomCode from "../../utils/genRandomCode";
-import { EmailService } from "../../utils/notification";
 const { FRONTEND_VERIFY_URL } = config;
 
 export const SendEmailVerification = async (email: string) => {
   const user = await accountModel.findOne({ email });
-  const emailService = new EmailService();
 
   if (!user) throw new Error("Invalid email address");
 
