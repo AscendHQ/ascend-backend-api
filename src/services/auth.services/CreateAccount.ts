@@ -14,6 +14,7 @@ export const CreateAccount = async (payload: UpdateQuery<IAccount>) => {
     password: hash_password,
     verification_token,
   });
+  await emailService.welcomeEmail({email: user.email, id:verification_token, firstName: user.first_name});
 
   // remove password and verification token
   account.password = "undefined";

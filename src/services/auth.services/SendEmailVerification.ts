@@ -13,8 +13,6 @@ export const SendEmailVerification = async (email: string) => {
   const verification_token = genRandomCode(4);
 
   // send email
-  await emailService.welcomeEmail({email: user.email, id:verification_token, firstName: user.first_name});
-
 
   user.verification_token = verification_token;
   const newUser = await user.save();
