@@ -1,4 +1,6 @@
 import nodemailer from 'nodemailer';
+import {config} from '../config/env';
+const { FRONTEND_VERIFY_URL } = config;
 
 export class EmailService {
 
@@ -7,12 +9,13 @@ export class EmailService {
     constructor() {
 
         this.transporter = nodemailer.createTransport({
-            host: process.env.EMAIL_HOST,
-            port: Number(process.env.EMAIL_PORT),
+            // host: config.EMAIL_HOST,
+            service: 'gmail', // use well known service
+            port: config.EMAIL_PORT,
             secure: false,
             auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
+                user: config.EMAIL_USER,
+                pass: config.EMAIL_PASS,
             },
         });
     }
@@ -42,17 +45,18 @@ export class EmailService {
 
     async welcomeEmail({email,id,firstName}:{email: string, id:string, firstName:string}) {
         const subject = 'Welcome to Ascend';
-        const link = `http://localhost:3050/verify/${id}`;
-        const text = `<p>Hello, ${firstName}</p>, you have successfully created an account with us. Please click on the link below to verify your account <br> <a href="${link}">Verify</a><p>Thanks,</p><p>Ascend team</p>`;
+        const link = `${FRONTEND_VERIFY_URL}/auth/verify_email?tkn=${id}`;
+        console.log(link);
+        const text = `<p>Hello, ${firstName},</p> You have successfully created an account with us. Please click on the link below to verify your account <a href="${link}">Verify</a><br>Thanks,<br>Ascend team.`;
         const emailSent = await this.sendEmail(email, subject, text);
         return emailSent;
 
     };
 
-    async forgetPasswordEmail({email, id, firstName}:{email: string, id:string, firstName:string}) {
+    async ResetPasswordEmail({email, id, firstName}:{email: string, id:string, firstName:string}) {
         const subject = 'Password Reset';
-        const link = `http://localhost:3050/reset/${id}`;
-        const text = `<p>Hello, ${firstName}</p>, you have requested for a password reset. Please click on the link below to reset your password <br> <a href="${link}">Reset Password</a><p>Thanks,</p><p>Ascend team</p>`;
+        const link = `${FRONTEND_VERIFY_URL}/auth/reset_password?tkn=${id}`;
+        const text = `<p>Hello, ${firstName},</p> You have requested for a password reset. Please click on the link below to reset your password <a href="${link}">Reset Password</a><br>Thanks,<br>Ascend team.`;
         const emailSent = await this.sendEmail(email, subject, text);
         return emailSent;
     }

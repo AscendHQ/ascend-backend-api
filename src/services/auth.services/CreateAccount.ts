@@ -8,6 +8,7 @@ export const CreateAccount = async (payload: UpdateQuery<IAccount>) => {
   const hash_password = await hash(payload.password, 10);
   const verification_token = genRandomCode(8, "alphabet");
 
+
   const account = await AccountModel.create({
     ...payload,
     password: hash_password,
@@ -15,6 +16,8 @@ export const CreateAccount = async (payload: UpdateQuery<IAccount>) => {
   });
 
   // remove password and verification token
+  account.password = "undefined";
+  account.verification_token = "undefined";
 
   return account;
 };
