@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 import {
   ELessonDuration,
-  ELessonStatus,
+  EStatus,
   ILesson,
   ILessonDocument,
 } from "../interface";
@@ -25,13 +25,7 @@ const lessonSchemaFields: Record<keyof ILesson, any> = {
   },
   lesson_plan: { type: String },
   objectives: { type: String },
-  staff: {
-    type: Schema.Types.ObjectId,
-    ref: "staff",
-    required: true,
-  },
-  status: { type: String, enum: ELessonStatus, default: ELessonStatus.PENDING },
-  session: { type: String },
+  status: { type: String, enum: EStatus, default: EStatus.PENDING },
 };
 
 const lessonSchema = new Schema(lessonSchemaFields, {
