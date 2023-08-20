@@ -10,7 +10,6 @@ const permissionSchemaFields: Record<keyof IPermissions, any> = {
   staff: {
     type: Schema.Types.ObjectId,
     ref: "staff",
-    required: true,
   },
   dashboard: {
     create: { type: Boolean, default: false },

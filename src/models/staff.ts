@@ -14,38 +14,38 @@ const staffSchemaFields: Record<keyof IStaff, any> = {
   permissions: {
     type: Schema.Types.ObjectId,
     ref: "permission",
-    required: true,
   },
+  staff_org_id: { type: String, required: true, unique: true },
   bio_data: {
-    staff_id: { type: String, required: true, unique: true },
     last_name: { type: String, required: true },
     first_name: { type: String, required: true },
     dob: { type: Date, required: true },
     gender: { type: String, enum: EGender, default: EGender.FEMALE },
+    phone_number: { type: String },
+    email: { type: String },
+  },
+  address: {
+    home_address: { type: String },
+    state_of_origin: { type: String },
+    local_government_area: { type: String },
+  },
+  next_of_kin: {
+    last_name: { type: String, required: true },
+    first_name: { type: String, required: true },
+    relationship: { type: String, required: true },
+    gender: { type: String, enum: EGender },
+    email: { type: String },
     phone_number: { type: String },
     address: {
       home_address: { type: String },
       state_of_origin: { type: String },
       local_government_area: { type: String },
     },
-    next_of_kin: {
-      last_name: { type: String, required: true },
-      first_name: { type: String, required: true },
-      relationship: { type: String, required: true },
-      gender: { type: String, enum: EGender },
-      email: { type: String },
-      phone_number: { type: String },
-      address: {
-        home_address: { type: String },
-        state_of_origin: { type: String },
-        local_government_area: { type: String },
-      },
-    },
-    picture: {
-      path: { type: String },
-      filename: { type: String },
-      key: { type: String },
-    },
+  },
+  picture: {
+    path: { type: String },
+    filename: { type: String },
+    key: { type: String },
   },
   official_information: {
     job_title: { type: String },
@@ -55,7 +55,7 @@ const staffSchemaFields: Record<keyof IStaff, any> = {
     department: { type: String },
     educational_qualification: { type: String },
   },
-  is_active: { type: Boolean, default: true },
+  is_active: { type: Boolean, default: false },
 };
 
 const staffSchema = new Schema(staffSchemaFields, {

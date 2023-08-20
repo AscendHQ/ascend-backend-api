@@ -7,6 +7,7 @@ const organizationSchemaFields: Record<keyof IOrganization, any> = {
   organization_logo: {
     path: { type: String },
     filename: { type: String },
+    key: { type: String },
   },
   address: {
     street: { type: String },
