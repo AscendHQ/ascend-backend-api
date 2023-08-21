@@ -6,6 +6,7 @@ export interface IOrganization {
   organization_logo: {
     path: string;
     filename: string;
+    key: string;
   };
   address: {
     street: string;

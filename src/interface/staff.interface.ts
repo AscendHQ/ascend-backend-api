@@ -25,19 +25,12 @@ export interface INextOfKin {
 }
 
 export interface IStaffBioData {
-  staff_id: string;
   last_name: string;
   first_name: string;
   dob: Date;
   gender: EGender;
   phone_number: string;
-  address: IAddress;
-  next_of_kin: INextOfKin;
-  picture: {
-    path: string;
-    filename: string;
-    key: string;
-  };
+  email: string;
 }
 
 export interface IStaffOfficialInformation {
@@ -53,6 +46,14 @@ export interface IStaff {
   organization: string | IOrganization;
   account?: string | IAccount;
   permissions: string | IPermissions;
+  staff_org_id: string;
+  address: IAddress;
+  next_of_kin: INextOfKin;
+  picture: {
+    path: string;
+    filename: string;
+    key: string;
+  };
   bio_data: IStaffBioData;
   official_information: IStaffOfficialInformation;
   is_active?: boolean;

@@ -54,12 +54,13 @@ export const getAllClasses = async (req: Request, res: Response) => {
 
 export const addClass = async (req: Request, res: Response) => {
   try {
-    const { org_id, name, session, class_teacher, students, additional_notes } =
+    const { account } = req;
+    const { name, session, class_teacher, students, additional_notes } =
       req.body;
 
     // check if having access
     const response = await AddClass({
-      organization: org_id,
+      organization: account.organization_id,
       name,
       size: students.length,
       session,
@@ -120,21 +121,15 @@ export const getClassById = async (req: Request, res: Response) => {
 
 export const updateClassById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { class_id } = req.params;
-    const {
-      org_id,
-      name,
-      session,
-      class_teacher,
-      size,
-      students,
-      additional_notes,
-    } = req.body;
+    const { name, session, class_teacher, size, students, additional_notes } =
+      req.body;
 
     // check if having access
 
     const response = await UpdateClassById(class_id, {
-      organization: org_id,
+      organization: account.organization_id,
       name,
       session,
       size,
