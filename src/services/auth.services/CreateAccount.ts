@@ -14,5 +14,7 @@ export const CreateAccount = async (payload: UpdateQuery<IAccount>) => {
     verification_token,
   });
 
+  // remove password and verification token
+
   return account;
 };

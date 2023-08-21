@@ -10,7 +10,8 @@ export const UpdateClassById = async (
     new: true,
   }).populate({
     path: "class_teacher",
-    select: "bio_data",
+    select:
+      "bio_data.last_name bio_data.first_name bio_data.email bio_data.phone_number",
   });
 
   return one_class;

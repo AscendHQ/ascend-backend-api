@@ -9,6 +9,7 @@ export const GetAllAccounts = async (
   const accounts = await AccountModel.find(query)
     .limit(limit)
     .skip((page - 1) * limit)
+    .select("-password -verification_token")
     .populate("organization")
     .exec();
 

@@ -4,6 +4,9 @@ import { SignToken } from "./SignToken";
 import { IAccount } from "../../interface";
 import AccountModel from "../../models/account";
 import genRandomCode from "../../utils/genRandomCode";
+import { config } from "../../config/env";
+
+const { ASCEND_ORG_ID } = config;
 
 export const SystemAccountSignup = async (payload: UpdateQuery<IAccount>) => {
   const hash_password = await hash(payload.password, 10);
@@ -12,7 +15,7 @@ export const SystemAccountSignup = async (payload: UpdateQuery<IAccount>) => {
   const account = await AccountModel.create({
     ...payload,
     password: hash_password,
-    organization: "ASCEND",
+    organization: ASCEND_ORG_ID,
     verification_token,
   });
 

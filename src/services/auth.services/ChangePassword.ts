@@ -20,5 +20,7 @@ export const ChangePassword = async (
   account.password = newPassword;
   const new_account = await account.save();
 
+  // remove the password and verification token
+
   return new_account;
 };

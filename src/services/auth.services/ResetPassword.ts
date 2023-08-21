@@ -18,5 +18,7 @@ export const ResetPassword = async (token: string, password: string) => {
 
   // send email
 
+  // remove password and verification token
+
   return newUser;
 };

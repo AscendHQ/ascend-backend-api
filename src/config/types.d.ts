@@ -7,4 +7,5 @@ export type EnvConfigType = {
   TOKEN_EXPIRES_TIME: string;
   FRONTEND_RESET_PASSWORD_URL: string;
   FRONTEND_VERIFY_URL: string;
+  ASCEND_ORG_ID: string;
 };
