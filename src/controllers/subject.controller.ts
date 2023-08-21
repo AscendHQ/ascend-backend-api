@@ -2,19 +2,24 @@ import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../utils/responseHandler";
 import { ICustomInterface } from "../interface";
 import { ObjectId } from "mongodb";
-import { GetAllLesson } from "../services/lesson.services";
+import {
+  AddSubject,
+  DeleteSubjectById,
+  GetAllSubject,
+  GetSubjectById,
+  UpdateSubjectById,
+} from "../services/subject.services";
 
 export const getAllSubjects = async (req: Request, res: Response) => {
   try {
     const {
       limit = 10,
       page = 1,
-      title,
-      subject,
+      subject_name,
+      subject_code,
       class_id,
       staff_id,
       status,
-      session,
     } = req.query;
 
     const query: ICustomInterface = {};
@@ -24,14 +29,16 @@ export const getAllSubjects = async (req: Request, res: Response) => {
       page: Number(page),
     };
 
-    if (title) query.title = { $regex: new RegExp(title as string, "i") };
-    if (subject) query.title = { $regex: new RegExp(subject as string, "i") };
-    if (class_id) query.class = new ObjectId(class_id as string);
+    if (subject_name)
+      query.subject_name = { $regex: new RegExp(subject_name as string, "i") };
+    if (subject_code)
+      query.subject_code = { $regex: new RegExp(subject_code as string, "i") };
+    if (class_id)
+      query.classes_offering = { $in: [new ObjectId(class_id as string)] };
     if (staff_id) query.staff = new ObjectId(staff_id as string);
     if (status) query.status = status;
-    if (session) query.session = { $regex: new RegExp(session as string, "i") };
 
-    const response = await GetAllLesson(query, options);
+    const response = await GetAllSubject(query, options);
 
     return successResponse(res, 200, response);
   } catch (error: any) {
@@ -43,16 +50,25 @@ export const addSubject = async (req: Request, res: Response) => {
   try {
     const { account } = req;
     const {
-      title,
-      subject,
-      duration,
-      lesson_plan,
-      objectives,
+      subject_name,
+      subject_code,
+      description,
+      classes_offering,
       staff,
-      session,
+      duration,
     } = req.body;
 
-    const response = await "";
+    // check if having access
+
+    const response = await AddSubject({
+      subject_name,
+      subject_code,
+      description,
+      classes_offering,
+      staff,
+      duration,
+      organization: account.organization_id,
+    });
 
     return successResponse(res, 201, response);
   } catch (error: any) {
@@ -62,7 +78,12 @@ export const addSubject = async (req: Request, res: Response) => {
 
 export const getSubjectById = async (req: Request, res: Response) => {
   try {
-    return successResponse(res, 200);
+    const { subject_id } = req.params;
+
+    // check if having access
+    const response = await GetSubjectById(subject_id);
+
+    return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
@@ -70,7 +91,29 @@ export const getSubjectById = async (req: Request, res: Response) => {
 
 export const updateSubjectById = async (req: Request, res: Response) => {
   try {
-    return successResponse(res, 200);
+    const { subject_id } = req.params;
+    const {
+      subject_name,
+      subject_code,
+      description,
+      classes_offering,
+      staff,
+      duration,
+      status,
+    } = req.body;
+
+    // check if having access
+
+    const response = await UpdateSubjectById(subject_id, {
+      subject_name,
+      subject_code,
+      description,
+      classes_offering,
+      staff,
+      duration,
+      status,
+    });
+    return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
@@ -78,7 +121,12 @@ export const updateSubjectById = async (req: Request, res: Response) => {
 
 export const deleteSubjectById = async (req: Request, res: Response) => {
   try {
-    return successResponse(res, 200);
+    const { subject_id } = req.params;
+
+    // check if having access
+
+    const response = await DeleteSubjectById(subject_id);
+    return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }

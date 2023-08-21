@@ -2,6 +2,7 @@ import { Document } from "mongoose";
 import { IClass } from "./class.interface";
 import { IOrganization } from "./organization.interface";
 import { IStaff } from "./staff.interface";
+import { EStatus } from "./lesson.interface";
 
 export enum ESubjectDuration {
   HOUR = "hour",
@@ -20,7 +21,7 @@ export interface ISubject {
     number: number;
     period: ESubjectDuration;
   };
-  status: string;
+  status?: EStatus;
 }
 
 export interface ISubjectDocument extends ISubject, Document {}
