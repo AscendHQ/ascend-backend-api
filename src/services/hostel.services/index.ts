@@ -1,6 +1,7 @@
 export * from "./getAllHostels";
 export * from "./addHostel";
 export * from "./GetOneHostel";
-// export * from "./UpdateHostel";
-// export * from "./DeleteHostel";
+export * from "./UpdateHostelById";
+// export * from "./GetHostel";
+export * from "./DeleteHostelById";
 export * from "./GetHostelById";

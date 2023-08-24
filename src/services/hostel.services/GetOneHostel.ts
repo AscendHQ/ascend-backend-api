@@ -1,7 +1,7 @@
 import HostelModel from '../../models/hostel';
-import { IHostels } from '../../interface';
+import { ICustomInterface } from '../../interface';
 
-export const FindOneHostel = async (query: IHostels) => {
+export const FindOneHostel = async (query: ICustomInterface) => {
     const hostel = await HostelModel.findOne(query).exec();
     return hostel;
 };
