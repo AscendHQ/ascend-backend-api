@@ -82,25 +82,25 @@ export const addHostel = async (req: Request, res: Response) => {
 
 export const getHostelById = async (req: Request, res: Response) => {
   try {
-    // // check if having access
-    // const { account } = req;
-    // const { account_id, organization_id } = account;
-    // const { hostel_id } = req.params;
+    // check if having access
+    const { account } = req;
+    const { account_id, organization_id } = account;
+    const { hostel_id } = req.params;
 
-    // // check if account exist
-    // const acc = await GetAccountById(account_id);
-    // if (!acc) return errorResponse(res, 404, "Account not found");
+    // check if account exist
+    const acc = await GetAccountById(account_id);
+    if (!acc) return errorResponse(res, 404, "Account not found");
 
-    // // check if organization exist
-    // const org = await GetOrganizationById(organization_id);
-    // if (!org) return errorResponse(res, 404, "Organization not found");
+    // check if organization exist
+    const org = await GetOrganizationById(organization_id);
+    if (!org) return errorResponse(res, 404, "Organization not found");
 
 
-    // // check if hostel exist
-    // const hostel = await FindByIdHostel(hostel_id);
-    // if (!hostel) return errorResponse(res, 404, "Hostel not found");
+    // check if hostel exist
+    const hostel = await FindByIdHostel(hostel_id);
+    if (!hostel) return errorResponse(res, 404, "Hostel not found");
 
-    // return successResponse(res, 200, hostel);
+    return successResponse(res, 200, hostel);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
@@ -108,26 +108,26 @@ export const getHostelById = async (req: Request, res: Response) => {
 
 export const updateHostelById = async (req: Request, res: Response) => {
   try {
-    // // check if having access
-    // const { account } = req;
-    // const { account_id, organization_id } = account;
-    // const { hostel_id } = req.params;
+    // check if having access
+    const { account } = req;
+    const { account_id, organization_id } = account;
+    const { hostel_id } = req.params;
 
-    // // check if account exist
-    // const acc = await GetAccountById(account_id);
-    // if (!acc) return errorResponse(res, 404, "Account not found");
+    // check if account exist
+    const acc = await GetAccountById(account_id);
+    if (!acc) return errorResponse(res, 404, "Account not found");
 
-    // // check if organization exist
-    // const org = await GetOrganizationById(organization_id);
-    // if (!org) return errorResponse(res, 404, "Organization not found");
+    // check if organization exist
+    const org = await GetOrganizationById(organization_id);
+    if (!org) return errorResponse(res, 404, "Organization not found");
 
-    // // check if hostel exist
-    // const hostel = await FindByIdHostel(hostel_id);
-    // if (!hostel) return errorResponse(res, 404, "Hostel not found");
+    // check if hostel exist
+    const hostel = await FindByIdHostel(hostel_id);
+    if (!hostel) return errorResponse(res, 404, "Hostel not found");
 
-    // // update hostel
-    // const response = await UpdateHostelById(hostel_id, req.body);
-    // return successResponse(res, 200, response);
+    // update hostel
+    const response = await UpdateHostelById(hostel_id, req.body);
+    return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
@@ -135,27 +135,27 @@ export const updateHostelById = async (req: Request, res: Response) => {
 
 export const deleteHostelById = async (req: Request, res: Response) => {
   try {
-    // // check if having access
-    // const { account } = req;
-    // const { account_id, organization_id } = account;
-    // const { hostel_id } = req.params;
+    // check if having access
+    const { account } = req;
+    const { account_id, organization_id } = account;
+    const { hostel_id } = req.params;
 
-    // // check if account exist
-    // const acc = await GetAccountById(account_id);
-    // if (!acc) return errorResponse(res, 404, "Account not found");
+    // check if account exist
+    const acc = await GetAccountById(account_id);
+    if (!acc) return errorResponse(res, 404, "Account not found");
 
-    // // check if organization exist
-    // const org = await GetOrganizationById(organization_id);
-    // if (!org) return errorResponse(res, 404, "Organization not found");
+    // check if organization exist
+    const org = await GetOrganizationById(organization_id);
+    if (!org) return errorResponse(res, 404, "Organization not found");
 
-    // // check if hostel exist
-    // const hostel = await FindByIdHostel(hostel_id);
-    // if (!hostel) return errorResponse(res, 404, "Hostel not found");
+    // check if hostel exist
+    const hostel = await FindByIdHostel(hostel_id);
+    if (!hostel) return errorResponse(res, 404, "Hostel not found");
 
-    // // delete hostel
-    // const response = await DeleteHostelById(hostel_id);
+    // delete hostel
+    const response = await DeleteHostelById(hostel_id);
 
-    // return successResponse(res, 200, response);
+    return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
@@ -163,28 +163,28 @@ export const deleteHostelById = async (req: Request, res: Response) => {
 
 export const addMembersToHostel = async (req: Request, res: Response) => {
   try {
-    // // check member type, student or staff
-    // // check if having access
-    // const { account } = req;
-    // const { account_id, organization_id } = account;
-    // const { hostel_id } = req.params;
+    // check member type, student or staff
+    // check if having access
+    const { account } = req;
+    const { account_id, organization_id } = account;
+    const { hostel_id } = req.params;
 
-    // // check if account exist
-    // const acc = await GetAccountById(account_id);
-    // if (!acc) return errorResponse(res, 404, "Account not found");
+    // check if account exist
+    const acc = await GetAccountById(account_id);
+    if (!acc) return errorResponse(res, 404, "Account not found");
 
-    // // check if organization exist
-    // const org = await GetOrganizationById(organization_id);
-    // if (!org) return errorResponse(res, 404, "Organization not found");
+    // check if organization exist
+    const org = await GetOrganizationById(organization_id);
+    if (!org) return errorResponse(res, 404, "Organization not found");
   
-    // // check if member exist
-    // // check if member is a student
+    // check if member exist
+    // check if member is a student
 
 
-    // // check if member is already in a hostel
-    // // check if hostel exist
-    // // check if hostel is full
-    // // add member to hostel
+    // check if member is already in a hostel
+    // check if hostel exist
+    // check if hostel is full
+    // add member to hostel
 
     return successResponse(res, 200);
   } catch (error: any) {
