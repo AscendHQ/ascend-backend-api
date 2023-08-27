@@ -57,7 +57,7 @@ const studentSchemaFields: Record<keyof IStudent, any> = {
   },
   additional_information: {
     previous_school: [{ type: String }],
-    disabilities: { type: String },
+    disabilities: [{ type: String }],
     medication: { type: String },
     nature_of_disability: { type: String },
   },
