@@ -12,6 +12,7 @@ export enum EStatus {
   APPROVED = "approved",
   PENDING = "pending",
   REJECTED = "rejected",
+  ARCHIVED = "archived",
 }
 
 export interface ILesson {
