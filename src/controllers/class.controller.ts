@@ -76,14 +76,14 @@ export const addClass = async (req: Request, res: Response) => {
 
 export const bulkAddClasses = async (req: Request, res: Response) => {
   try {
-    const { file } = req;
-    const { org_id } = req.body;
+    const { account, file } = req;
 
     // check if having access
 
     if (!file) {
       return errorResponse(res, 400, "Upload a file");
     }
+
     const data = await parse(file.buffer, {
       delimiter: ",",
       from_line: 2,
@@ -91,7 +91,7 @@ export const bulkAddClasses = async (req: Request, res: Response) => {
     });
 
     const classes = data.map((each_class: any) => ({
-      organization: org_id,
+      organization: account.organization_id,
       name: each_class[0],
       size: each_class[1],
       session: each_class[2],

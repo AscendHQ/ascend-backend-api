@@ -16,17 +16,18 @@ export interface IStudentPersonalInfo {
 }
 
 export interface IStudent {
+  registration_number: string;
   personal_information: IStudentPersonalInfo;
   academic_details: {
     class: string | IClass;
-    previous_school: string;
     enrollment_year: string;
     graduation_year: string;
-    awards: string[];
-    leadership_role: string;
-    extra_curricular: string[];
+    previous_school?: string;
+    awards?: string[];
+    leadership_role?: string;
+    extra_curricular?: string[];
   };
-  lesson_offering: Array<ILesson>;
+  lesson_offering: Array<string | ILesson>;
   contact_information: {
     residential_address: string;
     phone_number: string;
@@ -40,7 +41,7 @@ export interface IStudent {
     phone_number: string;
     email: string;
   };
-  medical_information: {
+  medical_information?: {
     blood_group: string;
     allergies: string;
     medication: string;
@@ -48,18 +49,17 @@ export interface IStudent {
   };
   additional_information?: {
     previous_school?: string[];
-    disabilities: string;
+    disabilities: string[];
     medication: string;
     nature_of_disability: string;
   };
-  hostel: {
+  hostel?: {
     hostel_id: string | IHostels;
     block: string;
     room: string;
   };
   organization: string | IOrganization;
-  is_active: boolean;
-  registration_number: string;
+  is_active?: boolean;
 }
 
 export interface IStudentDocument extends IStudent, Document {}

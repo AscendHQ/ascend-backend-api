@@ -43,6 +43,7 @@ import lessonRouter from "./routes/lesson";
 import staffRouter from "./routes/staff";
 import studentRouter from "./routes/student";
 import subjectRouter from "./routes/subject";
+import resultRouter from "./routes/result";
 
 // use routers
 app.use("/auth", authRouter);
@@ -54,6 +55,7 @@ app.use("/lessons", lessonRouter);
 app.use("/staffs", staffRouter);
 app.use("/students", studentRouter);
 app.use("/subjects", subjectRouter);
+app.use("/results", resultRouter);
 
 app.use("*", (req: Request, res: Response) => {
   const path = req.originalUrl;
