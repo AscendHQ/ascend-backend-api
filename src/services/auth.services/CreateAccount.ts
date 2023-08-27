@@ -10,13 +10,17 @@ export const CreateAccount = async (payload: UpdateQuery<IAccount>) => {
   const verification_token = genRandomCode(8, "alphabet");
   const emailService = new EmailService();
 
-
   const account = await AccountModel.create({
     ...payload,
     password: hash_password,
     verification_token,
   });
-  await emailService.welcomeEmail({email: account.email, id: verification_token, firstName: account.first_name});
+
+  await emailService.welcomeEmail({
+    email: account.email,
+    id: verification_token,
+    firstName: account.first_name,
+  });
 
   // remove password and verification token
   account.password = "undefined";
