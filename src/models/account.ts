@@ -11,6 +11,11 @@ const accountSchemaFields: Record<keyof IAccount, any> = {
     ref: "organization",
     required: true,
   },
+  permission: {
+    type: Schema.Types.ObjectId,
+    ref: "permission",
+    required: true,
+  },
   access_level: { type: Number, default: ESystemAccessLevel.NORMAL_USER },
   is_email_verified: { type: Boolean, default: false },
   is_verified: { type: Boolean, default: false },

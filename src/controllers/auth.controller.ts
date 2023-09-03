@@ -12,6 +12,10 @@ import {
   AccountExists,
 } from "../services/auth.services";
 import { CreateOrganization } from "../services/organization.services";
+import {
+  CreatePermission,
+  UpdatePermissionById,
+} from "../services/permission.services";
 
 export const systemAccountSignUp = async (req: Request, res: Response) => {
   try {
@@ -51,13 +55,31 @@ export const signUpOrganization = async (req: Request, res: Response) => {
       name: organization_name,
     });
 
+    const permission = await CreatePermission({
+      organization: organization._id,
+      dashboard: { create: true, view: true, edit: true, delete: true },
+      students: { create: true, view: true, edit: true, delete: true },
+      subjects: { create: true, view: true, edit: true, delete: true },
+      classes: { create: true, view: true, edit: true, delete: true },
+      teachers: { create: true, view: true, edit: true, delete: true },
+      hostel: { create: true, view: true, edit: true, delete: true },
+      lesson_plan: { create: true, view: true, edit: true, delete: true },
+      time_table: { create: true, view: true, edit: true, delete: true },
+      results: { create: true, view: true, edit: true, delete: true },
+      administration: { create: true, view: true, edit: true, delete: true },
+      payroll: { create: true, view: true, edit: true, delete: true },
+    });
+
     const response = await CreateAccount({
       first_name,
       last_name,
       password,
       email,
       organization: organization._id,
+      permission: permission._id,
     });
+
+    await UpdatePermissionById(permission._id, { staff: response._id });
 
     return successResponse(res, 200, response);
   } catch (error: any) {
