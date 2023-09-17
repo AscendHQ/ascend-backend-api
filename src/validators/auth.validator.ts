@@ -1,10 +1,5 @@
-import { Joi, Segments, celebrate } from "celebrate";
-
-const bodyValidator = (schema: any) => {
-  return celebrate({
-    [Segments.BODY]: schema,
-  });
-};
+import { Joi } from "celebrate";
+import bodyValidator from "../utils/bodyValidator";
 
 const loginSchema = Joi.object().keys({
   email: Joi.string().email({ minDomainSegments: 2 }).required(),
