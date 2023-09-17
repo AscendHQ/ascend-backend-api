@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { errorResponse } from "./responseHandler";
 import { Segments, celebrate } from "celebrate";
+import { ObjectSchema } from "@hapi/joi";
 
 const bodyValidator =
-  (schema: any) => (req: Request, res: Response, next: NextFunction) => {
+  (schema: ObjectSchema) =>
+  (req: Request, res: Response, next: NextFunction) => {
     return celebrate({
       [Segments.BODY]: schema,
     })(req, res, (error) => {
