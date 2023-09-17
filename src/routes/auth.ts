@@ -1,5 +1,4 @@
 import { Router } from "express";
-import validateBody from "../utils/bodyValidator";
 import { auth, isAscendAdmin } from "../auth/auth";
 import {
   systemAccountSignUp,
@@ -12,6 +11,7 @@ import {
   forgetPassword,
   resetPassword,
 } from "../controllers/auth.controller";
+import { authValidator } from "../validators/auth.validator";
 
 const router = Router();
 
@@ -19,7 +19,7 @@ router.post("/internal_signup", systemAccountSignUp);
 
 router.post("/signup", auth, isAscendAdmin, signUpOrganization);
 
-router.post("/login", accountLogin);
+router.post("/login", authValidator.login, accountLogin);
 
 router.get("/email_exists", auth, accountEmailExists);
 

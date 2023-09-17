@@ -1,5 +1,4 @@
 import { Router } from "express";
-import validateBody from "../utils/bodyValidator";
 import { auth, isAscendAdmin } from "../auth/auth";
 import {
   getAllClasses,
