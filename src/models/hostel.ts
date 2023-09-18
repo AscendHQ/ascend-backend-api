@@ -16,6 +16,7 @@ const hostelSchemaFields: Record<keyof IHostels, any> = {
     required: true,
   },
   name: { type: String, required: true },
+  students: [{ type: Schema.Types.ObjectId, ref: "student" }],
   staff: [{ type: Schema.Types.ObjectId, ref: "staff" }],
   capacity: { type: Number, default: 0 },
   number_of_students: { type: Number, default: 0 },

@@ -1,9 +1,17 @@
 import { Request, Response } from "express";
-import { AddHostel, GetAllHostel, FindOneHostel, FindByIdHostel, UpdateHostelById, DeleteHostelById } from "../services/hostel.services";
-import {GetAccountById} from "../services/account.services";
+import {
+  AddHostel,
+  GetAllHostel,
+  FindOneHostel,
+  FindByIdHostel,
+  UpdateHostelById,
+  DeleteHostelById,
+} from "../services/hostel.services";
+import { GetAccountById } from "../services/account.services";
 import { errorResponse, successResponse } from "../utils/responseHandler";
 import { ICustomInterface } from "../interface";
 import { GetOrganizationById } from "../services/organization.services";
+import { GetStudentById } from "../services/student.services";
 
 export const getAllHostel = async (req: Request, res: Response) => {
   try {
@@ -26,19 +34,20 @@ export const getAllHostel = async (req: Request, res: Response) => {
 
 export const addHostel = async (req: Request, res: Response) => {
   try {
-    const { 
-      name,  
-      staff, 
-      capacity, 
-      number_of_student, 
-      gender, room_type, 
-      available_amenities, 
-      other_notes, 
-      room_naming_convention, 
-      room_fee, 
-      room_fee_payment_period
+    const {
+      name,
+      staff,
+      capacity,
+      number_of_student,
+      gender,
+      room_type,
+      available_amenities,
+      other_notes,
+      room_naming_convention,
+      room_fee,
+      room_fee_payment_period,
     } = req.body;
-    
+
     // check if having access
     const { account } = req;
     const { account_id, organization_id } = account;
@@ -52,7 +61,10 @@ export const addHostel = async (req: Request, res: Response) => {
     if (!org) return errorResponse(res, 404, "Organization not found");
 
     // check if hostel with organization id, exist already
-    const hostel = await FindOneHostel({name: name, organization: organization_id});
+    const hostel = await FindOneHostel({
+      name: name,
+      organization: organization_id,
+    });
     if (hostel) return errorResponse(res, 409, "Hostel already exist");
 
     // check if staff exist
@@ -60,18 +72,20 @@ export const addHostel = async (req: Request, res: Response) => {
 
     //create hostel
     const response = await AddHostel({
-      name, 
-      organization: organization_id, 
-      staff, 
-      capacity, 
-      number_of_students: number_of_student, 
-      gender, room_type, 
-      available_amenities, 
-      other_notes, 
-      room_naming_convention, 
-      room_fee, 
+      name,
+      organization: organization_id,
+      staff,
+      students: [],
+      capacity,
+      number_of_students: number_of_student,
+      gender,
+      room_type,
+      available_amenities,
+      other_notes,
+      room_naming_convention,
+      room_fee,
       room_fee_payment_period,
-      is_active: true
+      is_active: true,
     });
 
     return successResponse(res, 200, response);
@@ -94,7 +108,6 @@ export const getHostelById = async (req: Request, res: Response) => {
     // check if organization exist
     const org = await GetOrganizationById(organization_id);
     if (!org) return errorResponse(res, 404, "Organization not found");
-
 
     // check if hostel exist
     const hostel = await FindByIdHostel(hostel_id);
@@ -167,6 +180,7 @@ export const addMembersToHostel = async (req: Request, res: Response) => {
     // check if having access
     const { account } = req;
     const { account_id, organization_id } = account;
+    const { member_id } = req.body;
     const { hostel_id } = req.params;
 
     // check if account exist
@@ -176,17 +190,28 @@ export const addMembersToHostel = async (req: Request, res: Response) => {
     // check if organization exist
     const org = await GetOrganizationById(organization_id);
     if (!org) return errorResponse(res, 404, "Organization not found");
-  
-    // check if member exist
+
     // check if member is a student
+    const student = await GetStudentById(member_id);
+    if (!student) return errorResponse(res, 404, "Student not found");
 
+    if (student.hostel?.hostel_id == hostel_id)
+      return errorResponse(res, 404, "Student already in this hostel");
 
-    // check if member is already in a hostel
     // check if hostel exist
+    const hostel = await FindByIdHostel(hostel_id);
+    if (!hostel) return errorResponse(res, 404, "Hostel not found");
     // check if hostel is full
-    // add member to hostel
+    if (hostel.number_of_students >= hostel.capacity)
+      return errorResponse(res, 404, "Hostel is full");
 
-    return successResponse(res, 200);
+    // add member to hostel
+    const response = await UpdateHostelById(hostel_id, {
+      students: [...member_id],
+      number_of_students: hostel.number_of_students + 1,
+    });
+
+    return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
