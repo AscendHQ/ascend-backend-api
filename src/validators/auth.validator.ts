@@ -31,13 +31,21 @@ const systemAccountSignupSchema = Joi.object().keys({
 const emailValidationSchema = Joi.object().keys({
   email: emailValidator,
 });
+const changePasswordSchema = Joi.object().keys({
+  old_password: passwordValidator,
+  new_password: passwordValidator,
+  confirm_password: passwordValidator,
+});
+const resetPasswordSchema = Joi.object().keys({
+  password: passwordValidator,
+});
 
 export const authValidator = {
   login: bodyValidator(loginSchema),
   signup: bodyValidator(signupSchema),
   systemAccountSignup: bodyValidator(systemAccountSignupSchema),
-  resetPassword: bodyValidator(emailValidationSchema),
+  resetPassword: bodyValidator(resetPasswordSchema),
   forgotPassword: bodyValidator(emailValidationSchema),
   sendEmailVerification: bodyValidator(emailValidationSchema),
-  changePassword: bodyValidator(emailValidationSchema),
+  changePassword: bodyValidator(changePasswordSchema),
 };
