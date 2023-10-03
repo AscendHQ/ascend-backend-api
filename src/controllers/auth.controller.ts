@@ -62,7 +62,7 @@ export const signUpOrganization = async (req: Request, res: Response) => {
       subjects: { create: true, view: true, edit: true, delete: true },
       classes: { create: true, view: true, edit: true, delete: true },
       teachers: { create: true, view: true, edit: true, delete: true },
-      hostel: { create: true, view: true, edit: true, delete: true },
+      hostels: { create: true, view: true, edit: true, delete: true },
       lesson_plan: { create: true, view: true, edit: true, delete: true },
       time_table: { create: true, view: true, edit: true, delete: true },
       results: { create: true, view: true, edit: true, delete: true },

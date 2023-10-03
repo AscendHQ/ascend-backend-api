@@ -17,7 +17,7 @@ export interface IPermissions {
   subjects: IPermissionList;
   classes: IPermissionList;
   teachers: IPermissionList;
-  hostel: IPermissionList;
+  hostels: IPermissionList;
   lesson_plan: IPermissionList;
   time_table: IPermissionList;
   results: IPermissionList;
