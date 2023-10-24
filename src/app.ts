@@ -47,7 +47,8 @@ import resultRouter from "./routes/result";
 
 // use routers
 app.use("/auth", authRouter);
-app.use("/orgs", organizationRouter);
+app.use("/organizations", organizationRouter);
+//app.use("/dashboards");
 app.use("/accounts", accountRouter);
 app.use("/classes", classRouter);
 app.use("/hostels", hostelRouter);
