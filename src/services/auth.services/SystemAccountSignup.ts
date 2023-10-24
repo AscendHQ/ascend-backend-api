@@ -24,6 +24,7 @@ export const SystemAccountSignup = async (payload: UpdateQuery<IAccount>) => {
     organization_id: account.organization as string,
     access_level: account.access_level,
     is_email_verified: account.is_email_verified,
+    permission: account.permission as string,
   });
 
   return token;

@@ -60,7 +60,7 @@ export const addStaff = async (req: Request, res: Response) => {
 
     // check if having access
 
-    let new_account;
+    let new_account, permission;
 
     if (bio_data.email) {
       bio_data.email = bio_data.email.toLowerCase();
@@ -69,21 +69,22 @@ export const addStaff = async (req: Request, res: Response) => {
         return errorResponse(res, 409, "Conflicting data");
       }
 
+      permission = await CreatePermission({
+        ...permissions,
+        organization: account.organization_id,
+      });
+
       new_account = await CreateAccount({
         first_name: bio_data.first_name,
         last_name: bio_data.last_name,
         email: bio_data.email,
         password,
         organization: account.organization_id,
+        permission: permission._id,
       });
 
       // send verification email to the staff
     }
-
-    const permission = await CreatePermission({
-      ...permissions,
-      organization: account.organization_id,
-    });
 
     const response = await AddStaff({
       staff_org_id,
@@ -92,12 +93,12 @@ export const addStaff = async (req: Request, res: Response) => {
       picture,
       bio_data,
       official_information,
-      permissions: permission._id,
+      permissions: permission!._id,
       account: new_account ? new_account._id : null,
       organization: account.organization_id,
     });
 
-    await UpdatePermissionById(permission._id, { staff: response._id });
+    await UpdatePermissionById(permission!._id, { staff: response._id });
 
     return successResponse(res, 201, response);
   } catch (error: any) {

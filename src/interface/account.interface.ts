@@ -1,5 +1,6 @@
 import { Document } from "mongoose";
 import { IOrganizationDocument } from "./organization.interface";
+import { IPermissionsDocument } from "./permission.interface";
 
 export interface IAccount {
   first_name: string;
@@ -7,6 +8,7 @@ export interface IAccount {
   email: string;
   password: string;
   organization: string | IOrganizationDocument;
+  permission: string | IPermissionsDocument;
   access_level: number;
   is_email_verified: boolean;
   is_verified: boolean;
