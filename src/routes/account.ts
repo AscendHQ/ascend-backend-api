@@ -1,5 +1,4 @@
 import { Router } from "express";
-import validateBody from "../utils/bodyValidator";
 import { auth, isAscendAdmin, isEmailVerified } from "../auth/auth";
 import {
   getAllAccounts,

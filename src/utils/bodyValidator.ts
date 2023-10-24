@@ -1,21 +1,20 @@
 import { Request, Response, NextFunction } from "express";
-import { validationResult } from "express-validator";
 import { errorResponse } from "./responseHandler";
+import { Segments, celebrate } from "celebrate";
+import { ObjectSchema } from "@hapi/joi";
 
-const bodyValidator = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const errors = validationResult(req);
-
-  if (errors.isEmpty()) return next();
-  const extractedErrors = [];
-  errors.array().forEach((err: any) => {
-    extractedErrors.push(`${err.param} invalid`);
-  });
-
-  return errorResponse(res, 400, { error: errors.array()[0] });
-};
+const bodyValidator =
+  (schema: ObjectSchema) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    return celebrate({
+      [Segments.BODY]: schema,
+    })(req, res, (error) => {
+      if (error) {
+        errorResponse(res, 400, error.joi.details[0].message);
+      } else {
+        next();
+      }
+    });
+  };
 
 export default bodyValidator;
