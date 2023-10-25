@@ -3,6 +3,7 @@ export interface IAccountAuthInfoRequest {
   organization_id: string;
   access_level: ESystemAccessLevel;
   is_email_verified: boolean;
+  permission: string;
 }
 
 export enum ESystemAccessLevel {

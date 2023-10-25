@@ -18,6 +18,7 @@ export const VerifyEmail = async (tkn: string) => {
     access_level: account.access_level,
     organization_id: account.organization as string,
     is_email_verified: account.is_email_verified as boolean,
+    permission: account.permission as string,
   });
 
   return token;

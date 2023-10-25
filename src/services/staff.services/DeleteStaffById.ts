@@ -1,12 +1,15 @@
-import AccountModel from "../../models/account";
-import PermissionModel from "../../models/permission";
+import { ObjectId } from "mongodb";
 import StaffModel from "../../models/staff";
 
-export const DeleteStaffById = async (staff_id: string) => {
-  const staff = await StaffModel.findByIdAndDelete(staff_id);
-
-  await PermissionModel.findByIdAndDelete(staff?.permissions);
-  await AccountModel.findByIdAndDelete(staff?.account);
+export const DeleteStaffById = async (
+  staff_no: string,
+  organization: ObjectId
+) => {
+  const staff = await StaffModel.findOneAndUpdate(
+    { staff_no, organization },
+    { date_deleted: new Date() },
+    { new: true }
+  );
 
   return staff;
 };

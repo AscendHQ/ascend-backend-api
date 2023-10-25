@@ -40,35 +40,66 @@ export class EmailService {
     }
   }
 
-  async welcomeEmail({
+  async WelcomeEmail({
     email,
-    id,
-    firstName,
+    token,
+    first_name,
   }: {
     email: string;
-    id: string;
-    firstName: string;
+    token: string;
+    first_name: string;
   }) {
     const subject = "Welcome to Ascend";
-    const link = `${FRONTEND_VERIFY_URL}/auth/verify_email?tkn=${id}`;
-    console.log(link);
-    const text = `<p>Hello, ${firstName},</p> You have successfully created an account with us. Please click on the link below to verify your account <a href="${link}">Verify</a><br>Thanks,<br>Ascend team.`;
+    const link = `${FRONTEND_VERIFY_URL}/auth/verify_email?tkn=${token}`;
+
+    const text = `<p>Hello, ${first_name},</p> You have successfully created an account with us. Please click on the link below to verify your account <a href="${link}">Verify</a><br>Thanks,<br>Ascend team.`;
+
+    const emailSent = await this.sendEmail(email, subject, text);
+    return emailSent;
+  }
+
+  async VerificationEmail({
+    email,
+    code,
+    first_name,
+  }: {
+    email: string;
+    code: string;
+    first_name: string;
+  }) {
+    const subject = "Verification Email";
+    const text = `<p> Hello, ${first_name},</p> Here is your verification code - ${code}.<br>Thanks,<br>Ascend team.`;
+
+    const emailSent = await this.sendEmail(email, subject, text);
+    return emailSent;
+  }
+
+  async ForgotPasswordEmail({
+    email,
+    link,
+    first_name,
+  }: {
+    email: string;
+    link: string;
+    first_name: string;
+  }) {
+    const subject = "Password Reset";
+    const text = `<p>Hello, ${first_name},</p> You have requested for a password reset. Please click on the link below to reset your password <a href="${link}">Reset Password</a><br>Thanks,<br>Ascend team.`;
+
     const emailSent = await this.sendEmail(email, subject, text);
     return emailSent;
   }
 
   async ResetPasswordEmail({
     email,
-    id,
-    firstName,
+    first_name,
   }: {
     email: string;
-    id: string;
-    firstName: string;
+    first_name: string;
   }) {
     const subject = "Password Reset";
-    const link = `${FRONTEND_VERIFY_URL}/auth/reset_password?tkn=${id}`;
-    const text = `<p>Hello, ${firstName},</p> You have requested for a password reset. Please click on the link below to reset your password <a href="${link}">Reset Password</a><br>Thanks,<br>Ascend team.`;
+    const text = `<p>Hello, ${first_name},</p> You have successful reset your password.<br>Thanks,<br>Ascend team.`;
+
     const emailSent = await this.sendEmail(email, subject, text);
     return emailSent;
   }

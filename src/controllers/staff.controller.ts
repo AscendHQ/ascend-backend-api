@@ -4,39 +4,49 @@ import {
   AddStaff,
   DeleteStaffById,
   GetAllStaff,
+  GetNextStaffNumber,
   GetStaffById,
   UpdateStaffById,
 } from "../services/staff.services";
-import { AccountExists, CreateAccount } from "../services/auth.services";
-import {
-  CreatePermission,
-  UpdatePermission,
-  UpdatePermissionById,
-} from "../services/permission.services";
 import { ICustomInterface } from "../interface";
+import { ObjectId } from "mongodb";
+import { UpdateOrganization } from "../services/organization.services";
 
 export const getAllStaff = async (req: Request, res: Response) => {
   try {
-    const { limit = 10, page = 1, staff_org_id, staff_email } = req.query;
+    const { account } = req;
+    const { limit = 100, page = 1, staff_no, status, type } = req.query;
 
-    const query: ICustomInterface = {};
+    const query: ICustomInterface = {
+      organization: new ObjectId(account.organization_id),
+    };
 
     const options: ICustomInterface = {
       limit: Number(limit),
       page: Number(page),
     };
 
-    if (staff_email) {
-      query["bio_data.email"] = {
-        $regex: new RegExp(staff_email as string, "i"),
-      };
-    }
-
-    if (staff_org_id) {
-      query.staff_org_id = staff_org_id;
-    }
+    if (staff_no) query.staff_no = staff_no;
+    if (status) query.status = status;
+    if (type) query.type = type;
 
     const response = await GetAllStaff(query, options);
+
+    return successResponse(res, 200, response);
+  } catch (error: any) {
+    return errorResponse(res, 500, error.message);
+  }
+};
+
+export const getNextStaffNumber = async (req: Request, res: Response) => {
+  try {
+    const { account } = req;
+    const { staff_no } = req.query;
+
+    const response = await GetNextStaffNumber(
+      account.organization_id,
+      staff_no as string
+    );
 
     return successResponse(res, 200, response);
   } catch (error: any) {
@@ -48,56 +58,49 @@ export const addStaff = async (req: Request, res: Response) => {
   try {
     const { account } = req;
     const {
-      staff_org_id,
+      staff_no,
+      surname,
+      other_names,
+      sex,
+      status,
+      type,
+      denomination,
+      department,
+      qualifications,
+      post,
       address,
-      next_of_kin,
-      picture,
-      bio_data,
-      password,
-      official_information,
-      permissions,
+      phone_number,
+      loan_received,
+      loan_refunded,
+      loan_debt,
+      employment_date,
+      exit_date,
+      exit_reason,
     } = req.body;
 
-    // check if having access
-
-    let new_account;
-
-    if (bio_data.email) {
-      bio_data.email = bio_data.email.toLowerCase();
-
-      if (await AccountExists(bio_data.email)) {
-        return errorResponse(res, 409, "Conflicting data");
-      }
-
-      new_account = await CreateAccount({
-        first_name: bio_data.first_name,
-        last_name: bio_data.last_name,
-        email: bio_data.email,
-        password,
-        organization: account.organization_id,
-      });
-
-      // send verification email to the staff
-    }
-
-    const permission = await CreatePermission({
-      ...permissions,
-      organization: account.organization_id,
-    });
-
     const response = await AddStaff({
-      staff_org_id,
-      address,
-      next_of_kin,
-      picture,
-      bio_data,
-      official_information,
-      permissions: permission._id,
-      account: new_account ? new_account._id : null,
       organization: account.organization_id,
+      staff_no,
+      surname,
+      other_names,
+      sex,
+      status,
+      type,
+      denomination,
+      department,
+      qualifications,
+      post,
+      address,
+      phone_number,
+      loan_received,
+      loan_refunded,
+      loan_debt,
+      employment_date,
+      exit_date,
+      exit_reason,
     });
 
-    await UpdatePermissionById(permission._id, { staff: response._id });
+    UpdateOrganization(account.organization_id, { last_staff_id: staff_no });
 
     return successResponse(res, 201, response);
   } catch (error: any) {
@@ -107,11 +110,13 @@ export const addStaff = async (req: Request, res: Response) => {
 
 export const getStaffById = async (req: Request, res: Response) => {
   try {
-    const { staff_id } = req.params;
+    const { account } = req;
+    const { staff_no } = req.params;
 
-    //check if having access
-
-    const response = await GetStaffById(staff_id);
+    const response = await GetStaffById(
+      staff_no,
+      new ObjectId(account.organization_id)
+    );
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
@@ -120,30 +125,51 @@ export const getStaffById = async (req: Request, res: Response) => {
 
 export const updateStaffById = async (req: Request, res: Response) => {
   try {
-    const { staff_id } = req.params;
+    const { account } = req;
+    const { staff_no } = req.params;
     const {
+      surname,
+      other_names,
+      sex,
+      status,
+      type,
+      denomination,
+      department,
+      qualifications,
+      post,
       address,
-      next_of_kin,
-      picture,
-      bio_data,
-      password,
-      official_information,
-      permissions,
+      phone_number,
+      loan_received,
+      loan_refunded,
+      loan_debt,
+      employment_date,
+      exit_date,
+      exit_reason,
     } = req.body;
 
-    // check if having access
+    const query = {
+      staff_no,
+      organization: new ObjectId(account.organization_id),
+    };
 
-    if (permissions) {
-      await UpdatePermission(staff_id, { ...permissions });
-    }
-
-    const response = await UpdateStaffById(staff_id, {
+    const response = await UpdateStaffById(query, {
+      surname,
+      other_names,
+      sex,
+      status,
+      type,
+      denomination,
+      department,
+      qualifications,
+      post,
       address,
-      next_of_kin,
-      picture,
-      bio_data,
-      password,
-      official_information,
+      phone_number,
+      loan_received,
+      loan_refunded,
+      loan_debt,
+      employment_date,
+      exit_date,
+      exit_reason,
     });
 
     return successResponse(res, 200, response);
@@ -154,11 +180,13 @@ export const updateStaffById = async (req: Request, res: Response) => {
 
 export const deleteStaffById = async (req: Request, res: Response) => {
   try {
-    const { staff_id } = req.params;
+    const { account } = req;
+    const { staff_no } = req.params;
 
-    // check if having access
-
-    const response = await DeleteStaffById(staff_id);
+    const response = await DeleteStaffById(
+      staff_no,
+      new ObjectId(account.organization_id)
+    );
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);

@@ -8,8 +8,10 @@ const permissionSchemaFields: Record<keyof IPermissions, any> = {
     required: true,
   },
   staff: {
-    type: Schema.Types.ObjectId,
-    ref: "staff",
+    create: { type: Boolean, default: false },
+    view: { type: Boolean, default: false },
+    edit: { type: Boolean, default: false },
+    delete: { type: Boolean, default: false },
   },
   dashboard: {
     create: { type: Boolean, default: false },
@@ -41,7 +43,7 @@ const permissionSchemaFields: Record<keyof IPermissions, any> = {
     edit: { type: Boolean, default: false },
     delete: { type: Boolean, default: false },
   },
-  hostel: {
+  hostels: {
     create: { type: Boolean, default: false },
     view: { type: Boolean, default: false },
     edit: { type: Boolean, default: false },

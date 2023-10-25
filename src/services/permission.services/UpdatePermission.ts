@@ -7,7 +7,7 @@ export const UpdatePermission = async (
   update: UpdateQuery<IPermissions>
 ) => {
   const permission = await PermissionModel.findOneAndUpdate(
-    { staff: staff_id },
+    { staffs: staff_id },
     update,
     { new: true }
   );
