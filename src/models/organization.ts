@@ -15,6 +15,9 @@ const organizationSchemaFields: Record<keyof IOrganization, any> = {
     country: { type: String },
   },
   is_verified: { type: Boolean },
+  slug: { type: String },
+  last_staff_id: { type: String },
+  last_student_id: { type: String },
 };
 
 const organizationSchema = new Schema(organizationSchemaFields, {

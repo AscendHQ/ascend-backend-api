@@ -58,6 +58,7 @@ export const signUpOrganization = async (req: Request, res: Response) => {
     const permission = await CreatePermission({
       organization: organization._id,
       dashboard: { create: true, view: true, edit: true, delete: true },
+      staff: { create: true, view: true, edit: true, delete: true },
       students: { create: true, view: true, edit: true, delete: true },
       subjects: { create: true, view: true, edit: true, delete: true },
       classes: { create: true, view: true, edit: true, delete: true },
@@ -78,8 +79,6 @@ export const signUpOrganization = async (req: Request, res: Response) => {
       organization: organization._id,
       permission: permission._id,
     });
-
-    await UpdatePermissionById(permission._id, { staff: response._id });
 
     return successResponse(res, 200, response);
   } catch (error: any) {

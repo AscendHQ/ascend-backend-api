@@ -11,7 +11,7 @@ export interface IPermissionList {
 
 export interface IPermissions {
   organization: string | IOrganization;
-  staff: string | IStaff;
+  staff: IPermissionList;
   dashboard: IPermissionList;
   students: IPermissionList;
   subjects: IPermissionList;

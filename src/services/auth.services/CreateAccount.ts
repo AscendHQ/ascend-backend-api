@@ -2,13 +2,13 @@ import { hash } from "bcryptjs";
 import { UpdateQuery } from "mongoose";
 import { IAccount } from "../../interface";
 import AccountModel from "../../models/account";
-import { EmailService } from "../../utils/notification";
 import genRandomCode from "../../utils/genRandomCode";
+import { EmailService } from "../../utils/notification";
+const emailService = new EmailService();
 
 export const CreateAccount = async (payload: UpdateQuery<IAccount>) => {
   const hash_password = await hash(payload.password, 10);
   const verification_token = genRandomCode(8, "alphabet");
-  const emailService = new EmailService();
 
   const account = await AccountModel.create({
     ...payload,
@@ -16,13 +16,12 @@ export const CreateAccount = async (payload: UpdateQuery<IAccount>) => {
     verification_token,
   });
 
-  await emailService.welcomeEmail({
+  await emailService.WelcomeEmail({
     email: account.email,
-    id: verification_token,
-    firstName: account.first_name,
+    token: verification_token,
+    first_name: account.first_name,
   });
 
-  // remove password and verification token
   account.password = "undefined";
   account.verification_token = "undefined";
 

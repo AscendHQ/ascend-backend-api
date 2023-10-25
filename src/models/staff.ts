@@ -1,5 +1,12 @@
 import { model, Schema } from "mongoose";
-import { EGender, IStaff, IStaffDocument } from "../interface";
+import {
+  EDenomination,
+  EEmploymentType,
+  EGender,
+  EStatus,
+  IStaff,
+  IStaffDocument,
+} from "../interface";
 
 const staffSchemaFields: Record<keyof IStaff, any> = {
   organization: {
@@ -7,55 +14,25 @@ const staffSchemaFields: Record<keyof IStaff, any> = {
     ref: "organization",
     required: true,
   },
-  account: {
-    type: Schema.Types.ObjectId,
-    ref: "account",
-  },
-  permissions: {
-    type: Schema.Types.ObjectId,
-    ref: "permission",
-  },
-  staff_org_id: { type: String, required: true, unique: true },
-  bio_data: {
-    last_name: { type: String, required: true },
-    first_name: { type: String, required: true },
-    dob: { type: Date, required: true },
-    gender: { type: String, enum: EGender, default: EGender.FEMALE },
-    phone_number: { type: String },
-    email: { type: String },
-  },
-  address: {
-    home_address: { type: String },
-    state_of_origin: { type: String },
-    local_government_area: { type: String },
-  },
-  next_of_kin: {
-    last_name: { type: String, required: true },
-    first_name: { type: String, required: true },
-    relationship: { type: String, required: true },
-    gender: { type: String, enum: EGender },
-    email: { type: String },
-    phone_number: { type: String },
-    address: {
-      home_address: { type: String },
-      state_of_origin: { type: String },
-      local_government_area: { type: String },
-    },
-  },
-  picture: {
-    path: { type: String },
-    filename: { type: String },
-    key: { type: String },
-  },
-  official_information: {
-    job_title: { type: String },
-    staff_category: { type: String },
-    employment_start_date: { type: Date },
-    employment_end_date: { type: Date },
-    department: { type: String },
-    educational_qualification: { type: String },
-  },
-  is_active: { type: Boolean, default: false },
+  staff_no: { type: String, required: true, unique: true },
+  surname: { type: String, required: true },
+  other_names: { type: String, required: true },
+  sex: { type: String, enum: Object.values(EGender) },
+  status: { type: String, enum: Object.values(EStatus) },
+  type: { type: String, enum: Object.values(EEmploymentType) },
+  denomination: { type: String, enum: Object.values(EDenomination) },
+  department: { type: String },
+  qualifications: [{ type: String }],
+  post: { type: String },
+  address: { type: String },
+  phone_number: { type: String },
+  loan_received: { type: Number, default: 0 },
+  loan_refunded: { type: Number, default: 0 },
+  loan_debt: { type: Number, default: 0 },
+  employment_date: { type: Date },
+  exit_date: { type: Date },
+  date_deleted: { type: Date },
+  exit_reason: { type: String },
 };
 
 const staffSchema = new Schema(staffSchemaFields, {
