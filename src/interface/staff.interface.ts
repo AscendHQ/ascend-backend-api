@@ -6,7 +6,7 @@ export enum EGender {
   FEMALE = "female",
 }
 
-export enum EStatus {
+export enum EStaffStatus {
   TEACHING = "teaching",
   NONE_TEACHING = "none_teaching",
 }
@@ -62,7 +62,7 @@ export interface IStaff {
   surname: string;
   other_names: string;
   sex: EGender;
-  status: EStatus;
+  status: EStaffStatus;
   type: EEmploymentType;
   denomination: EDenomination;
   department: string;

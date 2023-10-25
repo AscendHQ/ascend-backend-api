@@ -1,6 +1,11 @@
 import { Joi } from "celebrate";
 import bodyValidator from "../utils/bodyValidator";
-import { EDenomination, EEmploymentType, EGender, EStatus } from "../interface";
+import {
+  EDenomination,
+  EEmploymentType,
+  EGender,
+  EStaffStatus,
+} from "../interface";
 
 const createStaffSchema = Joi.object().keys({
   staff_no: Joi.string().required(),
@@ -10,7 +15,7 @@ const createStaffSchema = Joi.object().keys({
     .valid(...Object.values(EGender))
     .required(),
   status: Joi.string()
-    .valid(...Object.values(EStatus))
+    .valid(...Object.values(EStaffStatus))
     .required(),
   type: Joi.string()
     .valid(...Object.values(EEmploymentType))
@@ -36,7 +41,7 @@ const updateStaffSchema = Joi.object().keys({
   surname: Joi.string(),
   other_names: Joi.string(),
   sex: Joi.string().valid(...Object.values(EGender)),
-  status: Joi.string().valid(...Object.values(EStatus)),
+  status: Joi.string().valid(...Object.values(EStaffStatus)),
   type: Joi.string().valid(...Object.values(EEmploymentType)),
   denomination: Joi.string().valid(...Object.values(EDenomination)),
   department: Joi.string(),

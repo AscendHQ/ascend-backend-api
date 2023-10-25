@@ -3,7 +3,7 @@ import {
   EDenomination,
   EEmploymentType,
   EGender,
-  EStatus,
+  EStaffStatus,
   IStaff,
   IStaffDocument,
 } from "../interface";
@@ -18,7 +18,7 @@ const staffSchemaFields: Record<keyof IStaff, any> = {
   surname: { type: String, required: true },
   other_names: { type: String, required: true },
   sex: { type: String, enum: Object.values(EGender) },
-  status: { type: String, enum: Object.values(EStatus) },
+  status: { type: String, enum: Object.values(EStaffStatus) },
   type: { type: String, enum: Object.values(EEmploymentType) },
   denomination: { type: String, enum: Object.values(EDenomination) },
   department: { type: String },

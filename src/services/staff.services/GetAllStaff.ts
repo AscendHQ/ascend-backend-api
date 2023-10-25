@@ -3,7 +3,7 @@ import {
   EDenomination,
   EEmploymentType,
   EGender,
-  EStatus,
+  EStaffStatus,
   ICustomInterface,
 } from "../../interface";
 
@@ -21,11 +21,11 @@ export const GetAllStaff = async (
 
   const teaching_staff_count_promise = StaffModel.countDocuments({
     organization,
-    status: EStatus.TEACHING,
+    status: EStaffStatus.TEACHING,
   });
   const none_teaching_staff_count_promise = StaffModel.countDocuments({
     organization,
-    status: EStatus.NONE_TEACHING,
+    status: EStaffStatus.NONE_TEACHING,
   });
   const permanent_staff_count_promise = StaffModel.countDocuments({
     organization,

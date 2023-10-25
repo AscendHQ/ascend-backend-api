@@ -69,7 +69,7 @@ export const addHostel = async (req: Request, res: Response) => {
     if (hostel) return errorResponse(res, 409, "Hostel already exist");
 
     // check if staff exist
-    const staffs = await GetStaffById(staff);
+    const staffs = await GetStaffById(staff, new ObjectId(organization_id));
     if (!staffs) return errorResponse(res, 404, "Staff not found");
 
     // check if student exist
@@ -204,7 +204,7 @@ export const addMembersToHostel = async (req: Request, res: Response) => {
     hostel.students?.push(member_id);
     hostel.number_of_students = hostel.number_of_students + 1;
     await hostel.save();
-    
+
     const response = await UpdateHostelById(hostel_id, hostel);
 
     return successResponse(res, 200, response);
@@ -290,7 +290,7 @@ export const removeStudentFromHostel = async (req: Request, res: Response) => {
         hostel.number_of_students = hostel.number_of_students - 1;
         await hostel.save();
       }
-    };
+    }
 
     return successResponse(res, 200, hostel);
   } catch (error: any) {
