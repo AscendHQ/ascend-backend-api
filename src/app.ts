@@ -10,10 +10,10 @@ const { NODE_ENV } = config;
 
 const app = express();
 
-let whitelist: string[] = ["https://ascend.com"];
+let whitelist: string[] = ["https://ascend.com", "https://ascend.africa"];
 
 if (NODE_ENV !== "production") {
-  whitelist = [...whitelist, "http://localhost:3000", "http://127.0.0.1:3000"];
+  whitelist = [...whitelist, "http://localhost:3000", "http://127.0.0.1:3000", "https://school-management-git-staging-ascendhq.vercel.app", "https://ascend-africa.vercel.app"];
 }
 
 const corsOptions = {
