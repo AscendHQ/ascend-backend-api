@@ -11,13 +11,13 @@ export interface IPermissionList {
 
 export interface IPermissions {
   organization: string | IOrganization;
-  staff: string | IStaff;
+  staff: IPermissionList;
   dashboard: IPermissionList;
   students: IPermissionList;
   subjects: IPermissionList;
   classes: IPermissionList;
   teachers: IPermissionList;
-  hostel: IPermissionList;
+  hostels: IPermissionList;
   lesson_plan: IPermissionList;
   time_table: IPermissionList;
   results: IPermissionList;

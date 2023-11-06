@@ -1,7 +1,6 @@
 import { Document } from "mongoose";
 import { IClass } from "./class.interface";
 import { IOrganization } from "./organization.interface";
-import { IStaff } from "./staff.interface";
 
 export enum ELessonDuration {
   HOUR = "hour",
@@ -9,10 +8,11 @@ export enum ELessonDuration {
   MONTH = "month",
 }
 
-export enum ELessonStatus {
+export enum EStatus {
   APPROVED = "approved",
   PENDING = "pending",
   REJECTED = "rejected",
+  ARCHIVED = "archived",
 }
 
 export interface ILesson {
@@ -26,9 +26,7 @@ export interface ILesson {
   };
   lesson_plan: string;
   objectives: string;
-  staff: string | IStaff;
-  status: ELessonStatus;
-  session: string;
+  status?: EStatus;
 }
 
 export interface ILessonDocument extends ILesson, Document {}

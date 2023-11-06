@@ -1,11 +1,25 @@
 import { Document } from "mongoose";
-import { IAccount } from "./account.interface";
 import { IOrganization } from "./organization.interface";
-import { IPermissions } from "./permission.interface";
 
 export enum EGender {
   MALE = "male",
   FEMALE = "female",
+}
+
+export enum EStaffStatus {
+  TEACHING = "teaching",
+  NONE_TEACHING = "none_teaching",
+}
+
+export enum EEmploymentType {
+  PERMANENT = "permanent",
+  PART_TIME = "part_time",
+}
+
+export enum EDenomination {
+  ISLAM = "islam",
+  ADVENTIST = "adventist",
+  NON_ADVENTIST = "non_adventist",
 }
 
 export interface IAddress {
@@ -25,19 +39,12 @@ export interface INextOfKin {
 }
 
 export interface IStaffBioData {
-  staff_id: string;
   last_name: string;
   first_name: string;
   dob: Date;
   gender: EGender;
   phone_number: string;
-  address: IAddress;
-  next_of_kin: INextOfKin;
-  picture: {
-    path: string;
-    filename: string;
-    key: string;
-  };
+  email: string;
 }
 
 export interface IStaffOfficialInformation {
@@ -51,11 +58,25 @@ export interface IStaffOfficialInformation {
 
 export interface IStaff {
   organization: string | IOrganization;
-  account?: string | IAccount;
-  permissions: string | IPermissions;
-  bio_data: IStaffBioData;
-  official_information: IStaffOfficialInformation;
-  is_active?: boolean;
+  staff_no: string;
+  surname: string;
+  other_names: string;
+  sex: EGender;
+  status: EStaffStatus;
+  type: EEmploymentType;
+  denomination: EDenomination;
+  department: string;
+  qualifications: Array<string>;
+  post: string;
+  address: string;
+  phone_number: string;
+  loan_received: number;
+  loan_refunded: number;
+  loan_debt: number;
+  employment_date: Date;
+  exit_date: Date;
+  exit_reason: string;
+  date_deleted?: Date;
 }
 
 export interface IStaffDocument extends IStaff, Document {}

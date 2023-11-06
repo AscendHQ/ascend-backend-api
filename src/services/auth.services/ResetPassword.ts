@@ -1,9 +1,11 @@
 import { hash } from "bcryptjs";
 import { differenceInMinutes } from "date-fns";
-import accountModel from "../../models/account";
+import AccountModel from "../../models/account";
+import { EmailService } from "../../utils/notification";
+const emailService = new EmailService();
 
 export const ResetPassword = async (token: string, password: string) => {
-  const account = await accountModel.findOne({
+  const account = await AccountModel.findOne({
     verification_token: token,
   });
 
@@ -16,7 +18,13 @@ export const ResetPassword = async (token: string, password: string) => {
   account.password = await hash(password, 10);
   const newUser = await account.save();
 
-  // send email
+  await emailService.ResetPasswordEmail({
+    email: account.email,
+    first_name: account.first_name,
+  });
+
+  account.password = "undefined";
+  account.verification_token = "undefined";
 
   return newUser;
 };

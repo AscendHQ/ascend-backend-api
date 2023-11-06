@@ -8,7 +8,9 @@ export const UpdateAccountById = async (
 ) => {
   const account = await AccountModel.findByIdAndUpdate(account_id, update, {
     new: true,
-  });
+  })
+    .select("-password -verification_token")
+    .populate("organization");
 
   return account;
 };

@@ -12,12 +12,20 @@ import {
   AccountExists,
 } from "../services/auth.services";
 import { CreateOrganization } from "../services/organization.services";
+import {
+  CreatePermission,
+  UpdatePermissionById,
+} from "../services/permission.services";
 
 export const systemAccountSignUp = async (req: Request, res: Response) => {
   try {
     let { email, password, first_name, last_name } = req.body;
 
     email = email.toLowerCase();
+
+    if (await AccountExists(email)) {
+      return errorResponse(res, 409, "Conflicting data");
+    }
 
     const response = await SystemAccountSignup({
       email,
@@ -39,8 +47,28 @@ export const signUpOrganization = async (req: Request, res: Response) => {
 
     email = email.toLowerCase();
 
+    if (await AccountExists(email)) {
+      return errorResponse(res, 409, "Conflicting data");
+    }
+
     const organization = await CreateOrganization({
       name: organization_name,
+    });
+
+    const permission = await CreatePermission({
+      organization: organization._id,
+      dashboard: { create: true, view: true, edit: true, delete: true },
+      staff: { create: true, view: true, edit: true, delete: true },
+      students: { create: true, view: true, edit: true, delete: true },
+      subjects: { create: true, view: true, edit: true, delete: true },
+      classes: { create: true, view: true, edit: true, delete: true },
+      teachers: { create: true, view: true, edit: true, delete: true },
+      hostels: { create: true, view: true, edit: true, delete: true },
+      lesson_plan: { create: true, view: true, edit: true, delete: true },
+      time_table: { create: true, view: true, edit: true, delete: true },
+      results: { create: true, view: true, edit: true, delete: true },
+      administration: { create: true, view: true, edit: true, delete: true },
+      payroll: { create: true, view: true, edit: true, delete: true },
     });
 
     const response = await CreateAccount({
@@ -49,6 +77,7 @@ export const signUpOrganization = async (req: Request, res: Response) => {
       password,
       email,
       organization: organization._id,
+      permission: permission._id,
     });
 
     return successResponse(res, 200, response);
@@ -64,7 +93,7 @@ export const accountLogin = async (req: Request, res: Response) => {
     email = email.toLowerCase();
 
     const response = await AccountLogin(email, password);
-    return successResponse(res, 200);
+    return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }

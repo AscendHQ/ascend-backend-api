@@ -13,7 +13,7 @@ const app = express();
 let whitelist: string[] = ["https://ascend.africa", "https://staging.ascend.africa"];
 
 if (NODE_ENV !== "production") {
-  whitelist = [...whitelist, "http://localhost:3000", "http://127.0.0.1:3000"];
+  whitelist = [...whitelist, "http://localhost:3000", "http://127.0.0.1:3000", "https://school-management-git-staging-ascendhq.vercel.app", "https://ascend-africa.vercel.app"];
 }
 
 const corsOptions = {
@@ -35,13 +35,31 @@ app.use(express.json({ limit: "50mb" }));
 
 // import routers
 import authRouter from "./routes/auth";
-import organizationRouter from "./routes/organization";
+import staffRouter from "./routes/staff";
+
 import accountRouter from "./routes/account";
+import organizationRouter from "./routes/organization";
+import classRouter from "./routes/class";
+import hostelRouter from "./routes/hostel";
+import lessonRouter from "./routes/lesson";
+import studentRouter from "./routes/student";
+import subjectRouter from "./routes/subject";
+import resultRouter from "./routes/result";
 
 // use routers
 app.use("/auth", authRouter);
-app.use("/orgs", organizationRouter);
-app.use("/account", accountRouter);
+app.use("/staffs", staffRouter);
+
+// commented out as they want to release one feature at a time
+
+// app.use("/organizations", organizationRouter);
+// app.use("/accounts", accountRouter);
+// app.use("/classes", classRouter);
+// app.use("/hostels", hostelRouter);
+// app.use("/lessons", lessonRouter);
+// app.use("/students", studentRouter);
+// app.use("/subjects", subjectRouter);
+// app.use("/results", resultRouter);
 
 app.use("*", (req: Request, res: Response) => {
   const path = req.originalUrl;

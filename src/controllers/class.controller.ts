@@ -54,12 +54,13 @@ export const getAllClasses = async (req: Request, res: Response) => {
 
 export const addClass = async (req: Request, res: Response) => {
   try {
-    const { org_id, name, session, class_teacher, students, additional_notes } =
+    const { account } = req;
+    const { name, session, class_teacher, students, additional_notes } =
       req.body;
 
     // check if having access
     const response = await AddClass({
-      organization: org_id,
+      organization: account.organization_id,
       name,
       size: students.length,
       session,
@@ -75,14 +76,14 @@ export const addClass = async (req: Request, res: Response) => {
 
 export const bulkAddClasses = async (req: Request, res: Response) => {
   try {
-    const { file } = req;
-    const { org_id } = req.body;
+    const { account, file } = req;
 
     // check if having access
 
     if (!file) {
       return errorResponse(res, 400, "Upload a file");
     }
+
     const data = await parse(file.buffer, {
       delimiter: ",",
       from_line: 2,
@@ -90,7 +91,7 @@ export const bulkAddClasses = async (req: Request, res: Response) => {
     });
 
     const classes = data.map((each_class: any) => ({
-      organization: org_id,
+      organization: account.organization_id,
       name: each_class[0],
       size: each_class[1],
       session: each_class[2],
@@ -120,21 +121,15 @@ export const getClassById = async (req: Request, res: Response) => {
 
 export const updateClassById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { class_id } = req.params;
-    const {
-      org_id,
-      name,
-      session,
-      class_teacher,
-      size,
-      students,
-      additional_notes,
-    } = req.body;
+    const { name, session, class_teacher, size, students, additional_notes } =
+      req.body;
 
     // check if having access
 
     const response = await UpdateClassById(class_id, {
-      organization: org_id,
+      organization: account.organization_id,
       name,
       session,
       size,

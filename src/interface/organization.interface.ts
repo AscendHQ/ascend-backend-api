@@ -6,6 +6,7 @@ export interface IOrganization {
   organization_logo: {
     path: string;
     filename: string;
+    key: string;
   };
   address: {
     street: string;
@@ -13,6 +14,9 @@ export interface IOrganization {
     country: string;
   };
   is_verified: boolean;
+  slug: string;
+  last_staff_id: string;
+  last_student_id: string;
 }
 
 export interface IOrganizationDocument extends IOrganization, Document {}

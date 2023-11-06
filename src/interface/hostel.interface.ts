@@ -1,6 +1,7 @@
 import { Document } from "mongoose";
 import { EGender, IStaff } from "./staff.interface";
 import { IOrganization } from "./organization.interface";
+import { IStudent } from "./student.interface";
 
 export enum EHostelRoomType {
   SINGLE = "single",
@@ -37,6 +38,7 @@ export interface IHostels {
   organization: string | IOrganization;
   name: string;
   staff: Array<string | IStaff>;
+  students: Array<string | IStudent>;
   capacity: number;
   number_of_students: number;
   gender: EGender;

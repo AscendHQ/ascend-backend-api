@@ -13,4 +13,9 @@ export const schema = {
   TOKEN_EXPIRES_TIME: Joi.string().default("84h"),
   FRONTEND_RESET_PASSWORD_URL: Joi.string().required(),
   FRONTEND_VERIFY_URL: Joi.string().required(),
+  ASCEND_ORG_ID: Joi.string().required(),
+  EMAIL_USER: Joi.string().required(),
+  EMAIL_PASS: Joi.string().required(),
+  EMAIL_HOST: Joi.string().required(),
+  EMAIL_PORT: Joi.number().default(465),
 };

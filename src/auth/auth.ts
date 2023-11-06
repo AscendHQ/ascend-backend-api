@@ -27,9 +27,9 @@ export const isEmailVerified = (
   res: Response,
   next: NextFunction
 ) => {
-  const { account: user } = req;
+  const { account } = req;
 
-  if (!user.is_email_verified) {
+  if (!account.is_email_verified) {
     return errorResponse(res, 401, "Email not verified");
   }
 
@@ -41,9 +41,9 @@ export const isAscendAdmin = (
   res: Response,
   next: NextFunction
 ) => {
-  const { account: user } = req;
+  const { account } = req;
 
-  if (user.access_level < ESystemAccessLevel.READ_ADMIN)
+  if (account.access_level < ESystemAccessLevel.READ_ADMIN)
     return errorResponse(res, 401, "Unauthorized");
 
   return next();

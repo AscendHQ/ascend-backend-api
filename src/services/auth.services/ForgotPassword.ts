@@ -2,6 +2,8 @@ import { addMinutes } from "date-fns";
 import { config } from "../../config/env";
 import AccountModel from "../../models/account";
 import genRandomCode from "../../utils/genRandomCode";
+import { EmailService } from "../../utils/notification";
+const emailService = new EmailService();
 const { FRONTEND_RESET_PASSWORD_URL } = config;
 
 export const ForgotPassword = async (email: string) => {
@@ -13,7 +15,11 @@ export const ForgotPassword = async (email: string) => {
 
   if (!account) return;
 
-  // send link to email
+  await emailService.ForgotPasswordEmail({
+    email: account.email,
+    link,
+    first_name: account.first_name,
+  });
 
   account.verification_token = token;
   account.token_validity = addMinutes(Date.now(), 5);

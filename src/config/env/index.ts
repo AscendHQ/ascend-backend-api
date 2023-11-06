@@ -19,4 +19,9 @@ export const config: EnvConfigType = {
   TOKEN_EXPIRES_TIME: envVariables.TOKEN_EXPIRES_TIME,
   FRONTEND_RESET_PASSWORD_URL: envVariables.FRONTEND_RESET_PASSWORD_URL,
   FRONTEND_VERIFY_URL: envVariables.FRONTEND_VERIFY_URL,
+  ASCEND_ORG_ID: envVariables.ASCEND_ORG_ID,
+  EMAIL_USER: envVariables.EMAIL_USER,
+  EMAIL_PASS: envVariables.EMAIL_PASS,
+  EMAIL_HOST: envVariables.EMAIL_HOST,
+  EMAIL_PORT: envVariables.EMAIL_PORT,
 };

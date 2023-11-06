@@ -8,3 +8,6 @@ export * from "./class.interface";
 export * from "./hostel.interface";
 export * from "./lesson.interface";
 export * from "./student.interface";
+
+export * from "./subject.interface";
+export * from "./result.interface";

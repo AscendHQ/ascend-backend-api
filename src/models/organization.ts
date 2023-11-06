@@ -7,6 +7,7 @@ const organizationSchemaFields: Record<keyof IOrganization, any> = {
   organization_logo: {
     path: { type: String },
     filename: { type: String },
+    key: { type: String },
   },
   address: {
     street: { type: String },
@@ -14,6 +15,9 @@ const organizationSchemaFields: Record<keyof IOrganization, any> = {
     country: { type: String },
   },
   is_verified: { type: Boolean },
+  slug: { type: String },
+  last_staff_id: { type: String },
+  last_student_id: { type: String },
 };
 
 const organizationSchema = new Schema(organizationSchemaFields, {
