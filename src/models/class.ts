@@ -15,7 +15,8 @@ const classSchemaFields: Record<keyof IClass, any> = {
   name: { type: String, required: true },
   level: { type: String, enum: Object.values(EClassLevel), required: true },
   section: {
-    term: { type: String, enum: Object.values(EClassLevelSection) },
+    type: String,
+    enum: Object.values(EClassLevelSection),
   },
   other_section: {
     type: String,
