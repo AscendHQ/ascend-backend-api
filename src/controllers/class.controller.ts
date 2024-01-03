@@ -76,13 +76,9 @@ export const updateClassById = async (req: Request, res: Response) => {
 
 export const deleteClassById = async (req: Request, res: Response) => {
   try {
-    const { account } = req;
     const { class_id } = req.params;
 
-    const response = await DeleteClassById({
-      _id: new ObjectId(class_id),
-      organization: new ObjectId(account.organization_id),
-    });
+    const response = await DeleteClassById(class_id);
 
     return successResponse(res, 200, response);
   } catch (error: any) {

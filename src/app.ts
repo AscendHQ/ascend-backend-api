@@ -46,19 +46,20 @@ app.use(express.json({ limit: "50mb" }));
 import authRouter from "./routes/auth";
 import staffRouter from "./routes/staff";
 import classRouter from "./routes/class";
+import subjectRouter from "./routes/subject";
 
 import accountRouter from "./routes/account";
 import organizationRouter from "./routes/organization";
 import hostelRouter from "./routes/hostel";
 import lessonRouter from "./routes/lesson";
 import studentRouter from "./routes/student";
-import subjectRouter from "./routes/subject";
 import resultRouter from "./routes/result";
 
 // use routers
 app.use("/auth", authRouter);
 app.use("/staffs", staffRouter);
 app.use("/classes", classRouter);
+app.use("/subjects", subjectRouter);
 
 // commented out as they want to release one feature at a time
 
@@ -67,7 +68,6 @@ app.use("/classes", classRouter);
 // app.use("/hostels", hostelRouter);
 // app.use("/lessons", lessonRouter);
 // app.use("/students", studentRouter);
-// app.use("/subjects", subjectRouter);
 // app.use("/results", resultRouter);
 
 app.use("*", (req: Request, res: Response) => {

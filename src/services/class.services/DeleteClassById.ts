@@ -1,11 +1,7 @@
-import { ObjectId } from "mongodb";
 import ClassModel from "../../models/class";
 
-export const DeleteClassById = async (query: {
-  _id: ObjectId;
-  organization: ObjectId;
-}) => {
-  const one_class = await ClassModel.findOneAndDelete(query);
+export const DeleteClassById = async (class_id: string) => {
+  const one_class = await ClassModel.findByIdAndDelete(class_id);
 
   return one_class;
 };
