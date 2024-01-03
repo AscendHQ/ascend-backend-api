@@ -47,12 +47,12 @@ import authRouter from "./routes/auth";
 import staffRouter from "./routes/staff";
 import classRouter from "./routes/class";
 import subjectRouter from "./routes/subject";
+import studentRouter from "./routes/student";
 
 import accountRouter from "./routes/account";
 import organizationRouter from "./routes/organization";
 import hostelRouter from "./routes/hostel";
 import lessonRouter from "./routes/lesson";
-import studentRouter from "./routes/student";
 import resultRouter from "./routes/result";
 
 // use routers
@@ -60,6 +60,7 @@ app.use("/auth", authRouter);
 app.use("/staffs", staffRouter);
 app.use("/classes", classRouter);
 app.use("/subjects", subjectRouter);
+app.use("/students", studentRouter);
 
 // commented out as they want to release one feature at a time
 
@@ -67,7 +68,6 @@ app.use("/subjects", subjectRouter);
 // app.use("/accounts", accountRouter);
 // app.use("/hostels", hostelRouter);
 // app.use("/lessons", lessonRouter);
-// app.use("/students", studentRouter);
 // app.use("/results", resultRouter);
 
 app.use("*", (req: Request, res: Response) => {
