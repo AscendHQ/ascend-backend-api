@@ -1,7 +1,13 @@
-import HostelModel from '../../models/hostel';
-import { IHostels } from '../../interface';
+import HostelModel from "../../models/hostel";
 
-export const FindByIdHostel = async (hostel_id: string) => {
-    const hostel = await HostelModel.findById(hostel_id).exec();
-    return hostel;
+export const GetHostelById = async (hostel_id: string) => {
+  const hostel = await HostelModel.findById(hostel_id)
+    .populate({
+      path: "students",
+      select:
+        "personal_information.first_name personal_information.middle_name personal_information.last_name",
+    })
+    .exec();
+
+  return hostel;
 };
