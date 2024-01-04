@@ -1,26 +1,21 @@
 import { Router } from "express";
-import { auth, isAscendAdmin } from "../auth/auth";
+import { auth } from "../auth/auth";
 import {
   getAllStudents,
   addStudent,
-  bulkAddStudents,
-  getStudentById,
   updateStudentById,
   deleteStudentById,
 } from "../controllers/student.controller";
+import { checkPathPermission } from "../middlewares/checkPathPermission";
 
 const router = Router();
 
-router.get("/", auth, isAscendAdmin, getAllStudents);
+router.get("/", auth, checkPathPermission, getAllStudents);
 
-router.post("/", auth, addStudent);
+router.post("/", auth, checkPathPermission, addStudent);
 
-router.post("/bulk_add", auth, bulkAddStudents);
+router.put("/:student_id", auth, checkPathPermission, updateStudentById);
 
-router.get("/:student_id", auth, getStudentById);
-
-router.put("/:student_id", auth, updateStudentById);
-
-router.delete("/:student_id", auth, deleteStudentById);
+router.delete("/:student_id", auth, checkPathPermission, deleteStudentById);
 
 export default router;

@@ -1,35 +1,28 @@
 import { Router } from "express";
-import { auth, isAscendAdmin } from "../auth/auth";
+import { auth } from "../auth/auth";
 import {
   getAllHostel,
   addHostel,
   getHostelById,
   updateHostelById,
   deleteHostelById,
-  addMembersToHostel,
-  getAllStudentsInAnHostel,
-  updateStudentHostel,
-  removeStudentFromHostel,
+  bulkAddHostel,
 } from "../controllers/hostel.controller";
+import { checkPathPermission } from "../middlewares/checkPathPermission";
+import { csvUpload } from "../middlewares/csvUpload";
 
 const router = Router();
 
-router.get("/", auth, isAscendAdmin, getAllHostel);
+router.get("/", auth, checkPathPermission, getAllHostel);
 
-router.post("/", auth, addHostel);
+router.post("/", auth, checkPathPermission, addHostel);
 
-router.get("/:hostel_id", auth, getHostelById);
+router.post("/bulk", auth, csvUpload, checkPathPermission, bulkAddHostel);
 
-router.put("/:hostel_id", auth, updateHostelById);
+router.get("/:hostel_id", auth, checkPathPermission, getHostelById);
 
-router.delete("/:hostel_id", auth, deleteHostelById);
+router.put("/:hostel_id", auth, checkPathPermission, updateHostelById);
 
-router.post("/:hostel_id", auth, addMembersToHostel);
-
-router.get("/:hostel_id/students", auth, getAllStudentsInAnHostel);
-
-router.put("/:hostel_id/:student_id", auth, updateStudentHostel);
-
-router.patch("/hostel_id/:student_id", auth, removeStudentFromHostel);
+router.delete("/:hostel_id", auth, checkPathPermission, deleteHostelById);
 
 export default router;

@@ -1,23 +1,21 @@
 import { Router } from "express";
-import { auth, isAscendAdmin } from "../auth/auth";
+import { auth } from "../auth/auth";
 import {
   addSubject,
   deleteSubjectById,
   getAllSubjects,
-  getSubjectById,
   updateSubjectById,
 } from "../controllers/subject.controller";
+import { checkPathPermission } from "../middlewares/checkPathPermission";
 
 const router = Router();
 
-router.get("/", auth, isAscendAdmin, getAllSubjects);
+router.get("/", auth, checkPathPermission, getAllSubjects);
 
-router.post("/", auth, addSubject);
+router.post("/", auth, checkPathPermission, addSubject);
 
-router.get("/:subject_id", auth, getSubjectById);
+router.put("/:subject_id", auth, checkPathPermission, updateSubjectById);
 
-router.put("/:subject_id", auth, updateSubjectById);
-
-router.delete("/:subject_id", auth, deleteSubjectById);
+router.delete("/:subject_id", auth, checkPathPermission, deleteSubjectById);
 
 export default router;

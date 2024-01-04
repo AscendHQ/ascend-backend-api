@@ -1,9 +1,9 @@
 import { model, Schema } from "mongoose";
 import {
+  EClassTerm,
   EGender,
   EHostelAmenities,
   EHostelRoomType,
-  ERoomFeePaymentPeriod,
   ERoomNamingConvention,
   IHostels,
   IHostelsDocument,
@@ -16,13 +16,12 @@ const hostelSchemaFields: Record<keyof IHostels, any> = {
     required: true,
   },
   name: { type: String, required: true },
-  students: [{ type: Schema.Types.ObjectId, ref: "student" }],
-  staff: [{ type: Schema.Types.ObjectId, ref: "staff" }],
   capacity: { type: Number, default: 0 },
-  number_of_students: { type: Number, default: 0 },
-  gender: {
+  gender_type: {
     type: String,
     enum: EGender,
+    required: true,
+    default: EGender.FEMALE,
   },
   room_type: {
     type: String,
@@ -39,7 +38,10 @@ const hostelSchemaFields: Record<keyof IHostels, any> = {
       is_available: { type: Boolean, default: true },
     },
   ],
+  staff_name: { type: String },
+  staff_contact_number: { type: String },
   other_notes: { type: String },
+  students: [{ type: Schema.Types.ObjectId, ref: "student" }],
   room_naming_convention: {
     type: String,
     enum: ERoomNamingConvention,
@@ -48,10 +50,9 @@ const hostelSchemaFields: Record<keyof IHostels, any> = {
   room_fee: { type: Number, default: 0 },
   room_fee_payment_period: {
     type: String,
-    enum: ERoomFeePaymentPeriod,
-    default: ERoomFeePaymentPeriod.TERM,
+    enum: EClassTerm,
   },
-  is_active: { type: Boolean, default: false },
+  is_active: { type: Boolean, default: true },
 };
 
 const hostelSchema = new Schema(hostelSchemaFields, {
