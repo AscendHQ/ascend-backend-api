@@ -24,7 +24,7 @@ export const GetNextStaffNumber = async (
 
   function newStaffNumberGenerator(last_staff_id: string) {
     const currentYear = new Date().getFullYear();
-    const lastYearDigits = currentYear.toString().slice(-2);
+    const lastYearDigits = currentYear % 100;
 
     const first_letters = last_staff_id.match(/^[A-Za-z]+/);
     const last_staff_numerical_parts = last_staff_id.match(/(\d+)$/);

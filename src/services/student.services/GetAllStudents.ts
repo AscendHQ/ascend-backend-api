@@ -8,7 +8,9 @@ export const GetAllStudents = async (
   const { limit, page } = options;
   const students = await StudentModel.find(query)
     .limit(limit)
-    .skip((page - 1) * limit);
+    .skip((page - 1) * limit)
+    .populate({ path: "academic_details.class", select: "name" })
+    .exec();
 
   const total_documents = await StudentModel.countDocuments(query);
 

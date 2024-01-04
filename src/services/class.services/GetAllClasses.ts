@@ -1,5 +1,5 @@
 import ClassModel from "../../models/class";
-import { ICustomInterface } from "../../interface";
+import { EClassLevel, ICustomInterface } from "../../interface";
 
 export const GetAllClasses = async (
   query: ICustomInterface,
@@ -9,20 +9,24 @@ export const GetAllClasses = async (
 
   const classes = await ClassModel.find(query)
     .limit(limit)
-    .skip((page - 1) * limit)
-    .populate({
-      path: "class_teacher",
-      select:
-        "bio_data.last_name bio_data.first_name bio_data.email bio_data.phone_number",
-    })
-    .exec();
+    .skip((page - 1) * limit);
 
   const total_documents = await ClassModel.countDocuments(query);
+  const total_junior_class = await ClassModel.countDocuments({
+    organization: query.organization,
+    level: EClassLevel.Junior,
+  });
+  const total_senior_class = await ClassModel.countDocuments({
+    organization: query.organization,
+    level: EClassLevel.Senior,
+  });
 
   return {
     limit,
     page,
     classes,
     total_documents,
+    total_junior_class,
+    total_senior_class,
   };
 };
