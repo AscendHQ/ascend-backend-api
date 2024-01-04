@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { GetPermissionById } from "../services/permission.services";
 import { errorResponse } from "../utils/responseHandler";
+import { ObjectId } from "mongodb";
 
 export const checkPathPermission = async (
   req: Request,
@@ -12,6 +13,8 @@ export const checkPathPermission = async (
     account.permission
   );
 
+  // check why the account organization and the permission organization are not the same and user is not an admin on ascend
+  // new ObjectId(account.organization_id) !== permission.organization,
   if (!permission) {
     return errorResponse(res, 401, "Unauthorized");
   }

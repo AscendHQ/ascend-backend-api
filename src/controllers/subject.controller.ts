@@ -12,31 +12,21 @@ import {
 
 export const getAllSubjects = async (req: Request, res: Response) => {
   try {
-    const {
-      limit = 10,
-      page = 1,
-      subject_name,
-      subject_code,
-      class_id,
-      staff_id,
-      status,
-    } = req.query;
+    const { account } = req;
+    const { limit = 50, page = 1, name, code, level } = req.query;
 
-    const query: ICustomInterface = {};
+    const query: ICustomInterface = {
+      organization: new ObjectId(account.organization_id),
+    };
 
     const options: ICustomInterface = {
       limit: Number(limit),
       page: Number(page),
     };
 
-    if (subject_name)
-      query.subject_name = { $regex: new RegExp(subject_name as string, "i") };
-    if (subject_code)
-      query.subject_code = { $regex: new RegExp(subject_code as string, "i") };
-    if (class_id)
-      query.classes_offering = { $in: [new ObjectId(class_id as string)] };
-    if (staff_id) query.staff = new ObjectId(staff_id as string);
-    if (status) query.status = status;
+    if (name) query.name = { $regex: new RegExp(name as string, "i") };
+    if (code) query.code = { $regex: new RegExp(code as string, "i") };
+    if (level) query.level = query.level = level;
 
     const response = await GetAllSubject(query, options);
 
@@ -49,25 +39,15 @@ export const getAllSubjects = async (req: Request, res: Response) => {
 export const addSubject = async (req: Request, res: Response) => {
   try {
     const { account } = req;
-    const {
-      subject_name,
-      subject_code,
-      description,
-      classes_offering,
-      staff,
-      duration,
-    } = req.body;
-
-    // check if having access
+    const { name, code, type, level, classes } = req.body;
 
     const response = await AddSubject({
-      subject_name,
-      subject_code,
-      description,
-      classes_offering,
-      staff,
-      duration,
       organization: account.organization_id,
+      name,
+      code,
+      type,
+      level,
+      classes,
     });
 
     return successResponse(res, 201, response);
@@ -76,42 +56,16 @@ export const addSubject = async (req: Request, res: Response) => {
   }
 };
 
-export const getSubjectById = async (req: Request, res: Response) => {
-  try {
-    const { subject_id } = req.params;
-
-    // check if having access
-    const response = await GetSubjectById(subject_id);
-
-    return successResponse(res, 200, response);
-  } catch (error: any) {
-    return errorResponse(res, 500, error.message);
-  }
-};
-
 export const updateSubjectById = async (req: Request, res: Response) => {
   try {
     const { subject_id } = req.params;
-    const {
-      subject_name,
-      subject_code,
-      description,
-      classes_offering,
-      staff,
-      duration,
-      status,
-    } = req.body;
-
-    // check if having access
-
+    const { name, code, type, level, classes } = req.body;
     const response = await UpdateSubjectById(subject_id, {
-      subject_name,
-      subject_code,
-      description,
-      classes_offering,
-      staff,
-      duration,
-      status,
+      name,
+      code,
+      type,
+      level,
+      classes,
     });
     return successResponse(res, 200, response);
   } catch (error: any) {
@@ -122,8 +76,6 @@ export const updateSubjectById = async (req: Request, res: Response) => {
 export const deleteSubjectById = async (req: Request, res: Response) => {
   try {
     const { subject_id } = req.params;
-
-    // check if having access
 
     const response = await DeleteSubjectById(subject_id);
     return successResponse(res, 200, response);

@@ -1,5 +1,10 @@
 import { model, Schema } from "mongoose";
-import { EClassTerm, IClass, IClassDocument } from "../interface";
+import {
+  EClassLevel,
+  EClassLevelSection,
+  IClass,
+  IClassDocument,
+} from "../interface";
 
 const classSchemaFields: Record<keyof IClass, any> = {
   organization: {
@@ -7,12 +12,15 @@ const classSchemaFields: Record<keyof IClass, any> = {
     ref: "organization",
     required: true,
   },
-  name: { type: String },
-  size: { type: Number, default: 0 },
-  session: { type: String },
-  class_teacher: { type: Schema.Types.ObjectId, ref: "staff" },
-  students: [{ type: Schema.Types.ObjectId, ref: "student" }],
-  additional_notes: { type: String },
+  name: { type: String, required: true },
+  level: { type: String, enum: Object.values(EClassLevel), required: true },
+  section: {
+    type: String,
+    enum: Object.values(EClassLevelSection),
+  },
+  other_section: {
+    type: String,
+  },
 };
 
 const classSchema = new Schema(classSchemaFields, {
