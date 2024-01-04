@@ -34,7 +34,6 @@ export interface IStudent {
     previous_school?: string;
   };
   accommodation?: {
-    hostel: string | IHostels;
     block: string;
     room: string;
   };

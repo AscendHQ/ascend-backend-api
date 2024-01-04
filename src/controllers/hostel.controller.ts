@@ -80,14 +80,6 @@ export const addHostel = async (req: Request, res: Response) => {
       room_fee_payment_period,
     });
 
-    // update the students hostel within the student model
-    for (let i = 0; i < response.students.length; i++) {
-      let student = response.students[i];
-      UpdateStudentById(student as string, {
-        accommodation: { hostel: response._id },
-      });
-    }
-
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
@@ -126,16 +118,6 @@ export const bulkAddHostel = async (req: Request, res: Response) => {
     }));
 
     const response = await BulkAddHostel(hostels);
-
-    for (let i = 0; i < response.length; i++) {
-      let students = response[i].students;
-      for (let a = 0; a < students.length; a++) {
-        let student = students[a];
-        UpdateStudentById(student as string, {
-          accommodation: { hostel: response[i]._id },
-        });
-      }
-    }
 
     return successResponse(res, 200, response);
   } catch (error: any) {
@@ -199,15 +181,6 @@ export const deleteHostelById = async (req: Request, res: Response) => {
     const { hostel_id } = req.params;
 
     const response = await DeleteHostelById(hostel_id);
-
-    if (response) {
-      for (let i = 0; i < response.students.length; i++) {
-        let student = response.students[i];
-        UpdateStudentById(student as string, {
-          accommodation: {},
-        });
-      }
-    }
 
     return successResponse(res, 200, response);
   } catch (error: any) {

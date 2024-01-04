@@ -33,7 +33,6 @@ const studentSchemaFields: Record<keyof IStudent, any> = {
     previous_school: { type: String },
   },
   accommodation: {
-    hostel: { type: Schema.Types.ObjectId, ref: "hostel" },
     block: { type: String },
     room: { type: String },
   },
