@@ -11,3 +11,4 @@ export * from "./student.interface";
 
 export * from "./subject.interface";
 export * from "./result.interface";
+export * from "./subject_registration.interface";

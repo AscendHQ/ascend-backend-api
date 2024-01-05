@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { parse } from "csv-parse/sync";
 import { errorResponse, successResponse } from "../utils/responseHandler";
 import { ICustomInterface } from "../interface";
 import {
@@ -7,6 +8,7 @@ import {
   GetAllStudents,
   UpdateStudentById,
   GetNextStudentNumber,
+  BulkAddStudents,
 } from "../services/student.services";
 import { UpdateOrganization } from "../services/organization.services";
 
@@ -85,6 +87,69 @@ export const addStudent = async (req: Request, res: Response) => {
     });
 
     return successResponse(res, 201, response);
+  } catch (error: any) {
+    return errorResponse(res, 500, error.message);
+  }
+};
+
+export const bulkAddStudent = async (req: Request, res: Response) => {
+  try {
+    const { account, file } = req;
+
+    if (!file) {
+      return errorResponse(res, 400, "Upload a file");
+    }
+
+    const data = await parse(file.buffer, {
+      delimiter: ",",
+      from_line: 2,
+      relax_quotes: true,
+    });
+
+    const students = data.map((each_student: any) => ({
+      organization: account.organization_id,
+      registration_number: each_student[0],
+      personal_information: {
+        first_name: each_student[1],
+        middle_name: each_student[2],
+        last_name: each_student[3],
+        gender: each_student[4],
+        dob: each_student[5],
+        religion: each_student[6],
+        nationality: each_student[7],
+      },
+      contact_information: {
+        residential_address: each_student[8],
+        contact_number: each_student[9],
+      },
+      guardian_information: {
+        first_name: each_student[10],
+        last_name: each_student[11],
+        relationship_with_student: each_student[12],
+        contact_number: each_student[13],
+        email: each_student[14],
+      },
+      academic_details: {
+        previous_school: each_student[15],
+      },
+      accommodation: {
+        block: each_student[16],
+        room: each_student[17],
+      },
+      medical_information: {
+        allergies: each_student[18],
+        emergency_contact: each_student[19],
+        medication: each_student[20],
+      },
+      additional_information: {
+        disabilities: each_student[21],
+        nature_of_disability: each_student[22],
+      },
+    }));
+
+    const response = await BulkAddStudents(students);
+
+    return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
