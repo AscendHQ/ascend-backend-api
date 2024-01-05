@@ -11,7 +11,6 @@ import {
 } from "../services/hostel.services";
 import { errorResponse, successResponse } from "../utils/responseHandler";
 import { ICustomInterface } from "../interface";
-import { UpdateStudentById } from "../services/student.services";
 
 export const getAllHostel = async (req: Request, res: Response) => {
   try {
