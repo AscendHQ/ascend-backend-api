@@ -21,6 +21,10 @@ const classSchemaFields: Record<keyof IClass, any> = {
   other_section: {
     type: String,
   },
+  is_active: {
+    type: Boolean,
+    default: true,
+  },
 };
 
 const classSchema = new Schema(classSchemaFields, {

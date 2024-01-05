@@ -12,6 +12,8 @@ const app = express();
 
 let whitelist: string[] = [
   "https://ascend.africa",
+  "https://www.ascend.africa",
+  "ascend.africa",
   "https://staging.ascend.africa",
 ];
 
@@ -49,6 +51,8 @@ import classRouter from "./routes/class";
 import subjectRouter from "./routes/subject";
 import studentRouter from "./routes/student";
 import hostelRouter from "./routes/hostel";
+import dashboardRouter from "./routes/dashboard";
+import subjectRegistrationRouter from "./routes/student_registration";
 
 import accountRouter from "./routes/account";
 import organizationRouter from "./routes/organization";
@@ -62,6 +66,8 @@ app.use("/classes", classRouter);
 app.use("/subjects", subjectRouter);
 app.use("/students", studentRouter);
 app.use("/hostels", hostelRouter);
+app.use("/dashboard", dashboardRouter);
+app.use("/registrations", subjectRegistrationRouter);
 
 // commented out as they want to release one feature at a time
 

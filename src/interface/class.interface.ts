@@ -25,6 +25,7 @@ export interface IClass {
   level: EClassLevel;
   section?: EClassLevelSection;
   other_section?: string;
+  is_active?: boolean;
 }
 
 export interface IClassDocument extends IClass, Document {}
