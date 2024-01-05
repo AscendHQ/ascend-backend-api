@@ -6,7 +6,6 @@ import {
   AddSubject,
   DeleteSubjectById,
   GetAllSubject,
-  GetSubjectById,
   UpdateSubjectById,
 } from "../services/subject.services";
 
