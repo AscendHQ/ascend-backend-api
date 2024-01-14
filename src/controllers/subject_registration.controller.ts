@@ -12,10 +12,15 @@ import {
 export const getClassesWithStudents = async (req: Request, res: Response) => {
   try {
     const { account } = req;
+    const { class_id, class_name } = req.query;
 
     const query: ICustomInterface = {
       organization: new ObjectId(account.organization_id),
     };
+
+    if (class_id) query._id = new ObjectId(class_id as string);
+    if (class_name)
+      query.name = { $regex: new RegExp(class_name as string, "i") };
 
     const response = await GetClassesWithStudents(query);
 
