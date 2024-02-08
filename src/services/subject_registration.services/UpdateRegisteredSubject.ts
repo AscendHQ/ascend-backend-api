@@ -2,7 +2,7 @@ import { UpdateQuery } from "mongoose";
 import { ISubjectRegistration } from "../../interface";
 import SubjectRegistrationModel from "../../models/subject_registration";
 
-export const UpdateExtraSubject = async (
+export const UpdateRegisteredSubject = async (
   registration_id: string,
   update: UpdateQuery<ISubjectRegistration>
 ) => {

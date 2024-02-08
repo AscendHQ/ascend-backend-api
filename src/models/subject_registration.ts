@@ -17,6 +17,12 @@ const subjectRegistrationSchemaFields: Record<keyof ISubjectRegistration, any> =
       required: true,
     },
     class: { type: Schema.Types.ObjectId, ref: "class", required: true },
+    core_subjects: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "subject",
+      },
+    ],
     additional_subjects: [
       {
         type: Schema.Types.ObjectId,
