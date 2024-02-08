@@ -3,10 +3,10 @@ import { errorResponse, successResponse } from "../utils/responseHandler";
 import { ICustomInterface } from "../interface";
 import { ObjectId } from "mongodb";
 import {
-  AddExtraSubject,
+  RegisterSubject,
   GetClassesWithStudents,
   GetStudentRegistration,
-  UpdateExtraSubject,
+  UpdateRegisteredSubject,
 } from "../services/subject_registration.services";
 
 export const getClassesWithStudents = async (req: Request, res: Response) => {
@@ -50,15 +50,16 @@ export const getStudentRegistration = async (req: Request, res: Response) => {
   }
 };
 
-export const addExtraSubject = async (req: Request, res: Response) => {
+export const registerSubject = async (req: Request, res: Response) => {
   try {
     const { account } = req;
-    const { student, class_id, additional_subjects } = req.body;
+    const { student, class_id, additional_subjects, core_subjects } = req.body;
 
-    const response = await AddExtraSubject({
+    const response = await RegisterSubject({
       organization: account.organization_id,
       student,
       class: class_id,
+      core_subjects,
       additional_subjects,
     });
 
@@ -68,15 +69,16 @@ export const addExtraSubject = async (req: Request, res: Response) => {
   }
 };
 
-export const updateExtraSubject = async (req: Request, res: Response) => {
+export const updateRegisteredSubject = async (req: Request, res: Response) => {
   try {
     const { account } = req;
     const { registration_id } = req.params;
-    const { additional_subjects } = req.body;
+    const { additional_subjects, core_subjects } = req.body;
 
-    const response = await UpdateExtraSubject(registration_id, {
+    const response = await UpdateRegisteredSubject(registration_id, {
       organization: account.organization_id,
       additional_subjects,
+      core_subjects,
     });
 
     return successResponse(res, 200, response);

@@ -8,7 +8,11 @@ export const GetStudentRegistration = async (query: ICustomInterface) => {
       path: "additional_subjects",
       select: "name type",
     })
-    .select("additional_subjects")
+    .populate({
+      path: "core_subjects",
+      select: "name type",
+    })
+    .select("additional_subjects core_subjects")
     .exec();
 
   const subjects = await SubjectModel.find({ classes: query.class }).select(

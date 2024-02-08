@@ -8,6 +8,7 @@ export interface ISubjectRegistration {
   organization: string | IOrganization;
   student: string | IStudent;
   class: string | IClass;
+  core_subjects: Array<string | ISubject>;
   additional_subjects: Array<string | ISubject>;
 }
 

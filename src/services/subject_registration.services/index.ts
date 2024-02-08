@@ -1,4 +1,4 @@
-export * from "./GetClassesWithStudnts";
+export * from "./GetClassesWithStudents";
 export * from "./GetStudentRegistration";
-export * from "./AddExtraSubject";
-export * from "./UpdateExtraSubject";
+export * from "./RegisterSubject";
+export * from "./UpdateRegisteredSubject";
