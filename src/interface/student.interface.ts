@@ -49,6 +49,7 @@ export interface IStudent {
   };
   is_active?: boolean;
   is_deleted?: boolean;
+  is_registered?: boolean;
 }
 
 export interface IStudentDocument extends IStudent, Document {}
