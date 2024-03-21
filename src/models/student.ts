@@ -48,6 +48,7 @@ const studentSchemaFields: Record<keyof IStudent, any> = {
   },
   is_active: { type: Boolean, default: true },
   is_deleted: { type: Boolean, default: false },
+  is_registered: { type: Boolean, default: false },
 };
 
 const studentSchema = new Schema(studentSchemaFields, {

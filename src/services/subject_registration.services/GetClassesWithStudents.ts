@@ -27,6 +27,7 @@ export const GetClassesWithStudents = async (query: ICustomInterface) => {
               middle_name: "$$student.personal_information.middle_name",
               last_name: "$$student.personal_information.last_name",
               registration_number: "$$student.registration_number",
+              is_registered: "$$student.is_registered",
             },
           },
         },

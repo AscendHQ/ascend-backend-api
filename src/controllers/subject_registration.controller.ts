@@ -8,6 +8,7 @@ import {
   GetStudentRegistration,
   UpdateRegisteredSubject,
 } from "../services/subject_registration.services";
+import { UpdateStudentById } from "../services/student.services";
 
 export const getClassesWithStudents = async (req: Request, res: Response) => {
   try {
@@ -63,6 +64,12 @@ export const registerSubject = async (req: Request, res: Response) => {
       additional_subjects,
     });
 
+    if (response) {
+      await UpdateStudentById(student, {
+        is_registered: true,
+      });
+    }
+
     return successResponse(res, 201, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
@@ -80,6 +87,12 @@ export const updateRegisteredSubject = async (req: Request, res: Response) => {
       additional_subjects,
       core_subjects,
     });
+
+    if (response) {
+      await UpdateStudentById(response.student as string, {
+        is_registered: true,
+      });
+    }
 
     return successResponse(res, 200, response);
   } catch (error: any) {
