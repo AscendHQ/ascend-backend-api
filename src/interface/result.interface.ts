@@ -22,13 +22,31 @@ export interface IResultBlocks {
   grade: EGrade;
 }
 
+export enum EPsychomotor {
+  OBEDIENENCE = "obedience",
+  ATTENTION = "attention",
+  NEATNESS = "neatness",
+  INITIATIVE = "initiative",
+  POLITENESS = "politeness",
+  DEDICATION = "dedication",
+  PUNCTUALITY = "punctuality",
+}
+export interface IPsychomotor {
+  _id?: string;
+  psychomotor: EPsychomotor | string;
+  grade: EGrade;
+}
+
 export interface IResult {
   organization: string | IOrganization;
   student: string | IStudent;
   session: string;
   term: EClassTerm;
   blocks: Array<IResultBlocks>;
+  psychomotor?: Array<IPsychomotor>;
   status?: EStatus;
+  teachers_remark?: string;
+  principal_remark?: string;
 }
 
 export interface IResultDocument extends IResult, Document {}

@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { EStatus, IResult, IResultDocument } from "../interface";
+import { EGrade, EPsychomotor, EStatus, IResult, IResultDocument } from "../interface";
 
 const resultSchemaFields: Record<keyof IResult, any> = {
   organization: {
@@ -26,7 +26,15 @@ const resultSchemaFields: Record<keyof IResult, any> = {
       total: { type: Number, default: 0, min: 0, max: 100 },
     },
   ],
+  psychomotor: [
+    {
+      psychomotor: { type: String, enum: EPsychomotor },
+      grade: { type: String, enum: EGrade },
+    },
+  ],
   status: { type: String, enum: EStatus, default: EStatus.APPROVED },
+  teachers_remark: { type: String },
+  principal_remark: { type: String },
 };
 
 const resultSchema = new Schema(resultSchemaFields, {
