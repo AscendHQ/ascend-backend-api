@@ -37,13 +37,14 @@ export interface IPsychomotor {
   grade: EGrade;
 }
 
+
 export interface IResult {
   organization: string | IOrganization;
   student: string | IStudent;
   session: string;
   term: EClassTerm;
   blocks: Array<IResultBlocks>;
-  psychomotor?: Array<IPsychomotor>;
+  psychomotor: Array<IPsychomotor>;
   status?: EStatus;
   teachers_remark?: string;
   principal_remark?: string;

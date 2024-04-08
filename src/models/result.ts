@@ -32,13 +32,14 @@ const resultSchemaFields: Record<keyof IResult, any> = {
       grade: { type: String, enum: EGrade },
     },
   ],
-  status: { type: String, enum: EStatus, default: EStatus.APPROVED },
+  status: { type: String, enum: EStatus, default: EStatus.PENDING },
   teachers_remark: { type: String },
   principal_remark: { type: String },
 };
 
 const resultSchema = new Schema(resultSchemaFields, {
   timestamps: true,
+  versionKey: false,
 });
 
 const ResultModel = model<IResultDocument>("result", resultSchema);

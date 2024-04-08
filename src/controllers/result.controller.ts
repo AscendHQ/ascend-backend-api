@@ -48,7 +48,7 @@ export const getAllResults = async (req: Request, res: Response) => {
 export const addResult = async (req: Request, res: Response) => {
   try {
     const { account } = req;
-    const { student, session, term, blocks } = req.body;
+    const { student, session, term, blocks, psychomotor, teachers_remark, principal_remark } = req.body;
 
     // check if having access
 
@@ -58,6 +58,9 @@ export const addResult = async (req: Request, res: Response) => {
       session,
       term,
       blocks,
+      psychomotor,
+      teachers_remark,
+      principal_remark,
     });
 
     return successResponse(res, 201, response);
