@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { EGrade, EPsychomotor, EStatus, IResult, IResultDocument } from "../interface";
+import { EAction, EGrade, EPsychomotor, EStatus, IResult, IResultDocument } from "../interface";
 
 const resultSchemaFields: Record<keyof IResult, any> = {
   organization: {
@@ -26,14 +26,15 @@ const resultSchemaFields: Record<keyof IResult, any> = {
       total: { type: Number, default: 0, min: 0, max: 100 },
     },
   ],
-  psychomotor: [
+  psychomotors: [
     {
       psychomotor: { type: String, enum: EPsychomotor },
       grade: { type: String, enum: EGrade },
     },
   ],
   status: { type: String, enum: EStatus, default: EStatus.PENDING },
-  teachers_remark: { type: String },
+  action: { type: String, enum: EAction},
+  teacher_remark: { type: String },
   principal_remark: { type: String },
 };
 
@@ -41,6 +42,22 @@ const resultSchema = new Schema(resultSchemaFields, {
   timestamps: true,
   versionKey: false,
 });
+
+resultSchema.pre("save", function (next) {
+  const result = this as IResultDocument;
+  const status = result.status;
+  if (status === EStatus.PENDING) {
+    result.action = EAction.REGISTER;
+  }
+  if (status === EStatus.COMPLETED) {
+    result.action = EAction.VIEW;
+  }
+  if (status === EStatus.IN_PROGRESS) {
+    result.action = EAction.RESUME;
+  }
+  next();
+}
+);
 
 const ResultModel = model<IResultDocument>("result", resultSchema);
 export default ResultModel;

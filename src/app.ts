@@ -68,13 +68,14 @@ app.use("/students", studentRouter);
 app.use("/hostels", hostelRouter);
 app.use("/dashboard", dashboardRouter);
 app.use("/registrations", subjectRegistrationRouter);
+app.use("/results", resultRouter);
+
 
 // commented out as they want to release one feature at a time
 
 // app.use("/organizations", organizationRouter);
 // app.use("/accounts", accountRouter);
 // app.use("/lessons", lessonRouter);
-// app.use("/results", resultRouter);
 
 app.use("*", (req: Request, res: Response) => {
   const path = req.originalUrl;

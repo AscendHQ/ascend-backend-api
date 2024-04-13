@@ -37,6 +37,11 @@ export interface IPsychomotor {
   grade: EGrade;
 }
 
+export enum EAction {
+  RESUME = "resume",
+  REGISTER = "register",
+  VIEW = "view",
+}
 
 export interface IResult {
   organization: string | IOrganization;
@@ -44,9 +49,10 @@ export interface IResult {
   session: string;
   term: EClassTerm;
   blocks: Array<IResultBlocks>;
-  psychomotor: Array<IPsychomotor>;
+  psychomotors: Array<IPsychomotor>;
   status?: EStatus;
-  teachers_remark?: string;
+  action?: EAction;
+  teacher_remark?: string;
   principal_remark?: string;
 }
 
