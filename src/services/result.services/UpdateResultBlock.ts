@@ -15,6 +15,5 @@ export const UpdateResultBlock = async (
   const result = await ResultModel.findOneAndUpdate(query, updateObject, {
     new: true,
   });
-
   return result;
 };

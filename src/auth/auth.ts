@@ -7,6 +7,7 @@ import { config } from "../config/env";
 const { JWT_SECRET } = config;
 
 export const auth = (req: Request, res: Response, next: NextFunction) => {
+
   const token = req.headers["access-token"] as string;
 
   if (token) {
@@ -28,7 +29,6 @@ export const isEmailVerified = (
   next: NextFunction
 ) => {
   const { account } = req;
-
   if (!account.is_email_verified) {
     return errorResponse(res, 401, "Email not verified");
   }

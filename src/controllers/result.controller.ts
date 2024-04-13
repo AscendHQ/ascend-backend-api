@@ -11,6 +11,9 @@ import {
   GetResultById,
   UpdateResultBlock,
   UpdateResultById,
+  AddToResultPsychomotor,
+  UpdateResultPsychomotor,
+  DeleteResultpsychomotor,
 } from "../services/result.services";
 
 export const getAllResults = async (req: Request, res: Response) => {
@@ -48,7 +51,7 @@ export const getAllResults = async (req: Request, res: Response) => {
 export const addResult = async (req: Request, res: Response) => {
   try {
     const { account } = req;
-    const { student, session, term, blocks } = req.body;
+    const { student, session, term, blocks, psychomotors, status, teacher_remark, principal_remark } = req.body;
 
     // check if having access
 
@@ -58,6 +61,10 @@ export const addResult = async (req: Request, res: Response) => {
       session,
       term,
       blocks,
+      psychomotors,
+      teacher_remark,
+      principal_remark,
+      status,
     });
 
     return successResponse(res, 201, response);
@@ -138,6 +145,7 @@ export const updateResultInResultBlock = async (
 ) => {
   try {
     const { result_id, block_id } = req.params;
+    
     const { subject, mid_term_test, ca_score, exam_score, total, grade } =
       req.body;
     // check if having access
@@ -165,3 +173,49 @@ export const deleteResultFromResultBlock = async (
     return errorResponse(res, 500, error.message);
   }
 };
+
+export const addToResultPsychomotor = async (req: Request, res: Response) => {
+  try {
+
+    const { result_id } = req.params;
+    const { psychomotor, grade } = req.body;
+
+    // check if having access
+    const response = await AddToResultPsychomotor(result_id, {
+      psychomotor,
+      grade,
+    });
+    return successResponse(res, 200, response);
+  } catch(error: any) {
+    return errorResponse(res, 500, error.message);
+  }
+}
+
+
+export const updateResultPsychomotor = async (req: Request, res: Response) => {
+  try {
+    const { result_id, psychomotor_id } = req.params;
+    const { psychomotor, grade } = req.body;
+
+    // check if having access
+    const response = await UpdateResultPsychomotor(
+      { _id: result_id, "psychomotors._id": psychomotor_id },
+      { psychomotor, grade }
+    );
+    return successResponse(res, 200, response);
+  } catch (error: any) {
+    return errorResponse(res, 500, error.message);
+  }
+}
+
+export const deleteResultPsychomotor = async (req: Request, res: Response) => {
+  try {
+    const { result_id, psychomotor_id } = req.params;
+
+    // check if having access
+    const response = await DeleteResultpsychomotor(result_id, psychomotor_id);
+    return successResponse(res, 200, response);
+  } catch (error: any) {
+    return errorResponse(res, 500, error.message);
+  }
+}

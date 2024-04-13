@@ -13,6 +13,8 @@ export enum EStatus {
   PENDING = "pending",
   REJECTED = "rejected",
   ARCHIVED = "archived",
+  COMPLETED = "completed",
+  IN_PROGRESS = "in_progress",
 }
 
 export interface ILesson {

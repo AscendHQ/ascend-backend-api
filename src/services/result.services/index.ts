@@ -6,3 +6,6 @@ export * from "./DeleteResultById";
 export * from "./AddToResultBlock";
 export * from "./UpdateResultBlock";
 export * from "./DeleteResultBlock";
+export * from "./AddToResultPsychomotor";
+export * from "./UpdateResultPsychomotor";
+export * from "./DeleteResultPsychomotor";
