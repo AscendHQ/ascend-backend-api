@@ -48,13 +48,33 @@ router.get("/", async (req: Request, res: Response) => {
         .send("Missing required query params: school, email, password.");
     }
 
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/;
+    if (!passwordPattern.test(password)) {
+      return res
+        .status(400)
+        .send(
+          "Password must contain at least one lowercase letter, one uppercase letter, one digit, one special character, and be at least 8 characters long - the login page enforces this too, so it won't work otherwise."
+        );
+    }
+
     const normalizedEmail = email.toLowerCase();
 
     const existing = await AccountModel.findOne({ email: normalizedEmail });
+
     if (existing) {
-      return res
-        .status(409)
-        .send(`An account with ${normalizedEmail} already exists. Nothing was created.`);
+      const hashedPassword = await hash(password, 10);
+      existing.password = hashedPassword;
+      existing.is_email_verified = true;
+      existing.is_verified = true;
+      await existing.save();
+
+      return res.send(
+        `Account already existed - password reset instead.\n\n` +
+          `Log in at your frontend's /auth/login page with:\n` +
+          `  email: ${existing.email}\n` +
+          `  password: (the new one you put in the URL)\n\n` +
+          `Now go remove this bootstrap route and redeploy - it should not stay live.`
+      );
     }
 
     const organization = await CreateOrganization({ name: school });
