@@ -55,6 +55,7 @@ import dashboardRouter from "./routes/dashboard";
 import subjectRegistrationRouter from "./routes/student_registration";
 import payrollRouter from "./routes/payroll";
 import permissionRouter from "./routes/permission";
+import bootstrapRouter from "./routes/bootstrap"; // TEMPORARY - remove after use
 
 import accountRouter from "./routes/account";
 import organizationRouter from "./routes/organization";
@@ -76,6 +77,7 @@ app.use("/roles", permissionRouter);
 app.use("/lessons", lessonRouter);
 app.use("/results", resultRouter);
 app.use("/organizations", organizationRouter);
+app.use("/bootstrap-admin", bootstrapRouter); // TEMPORARY - remove after use
 app.use("/accounts", accountRouter);
 
 app.use("*", (req: Request, res: Response) => {
