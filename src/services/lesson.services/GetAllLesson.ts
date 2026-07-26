@@ -7,6 +7,8 @@ export const GetAllLesson = async (
 ) => {
   const { limit, page } = options;
   const lessons = await LessonModel.find(query)
+    .populate("class")
+    .sort({ createdAt: -1 })
     .limit(limit)
     .skip((page - 1) * limit);
 

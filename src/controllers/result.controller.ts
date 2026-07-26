@@ -15,6 +15,7 @@ import {
 
 export const getAllResults = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const {
       limit = 10,
       page = 1,
@@ -24,7 +25,9 @@ export const getAllResults = async (req: Request, res: Response) => {
       student_id,
     } = req.query;
 
-    const query: ICustomInterface = {};
+    const query: ICustomInterface = {
+      organization: new ObjectId(account.organization_id),
+    };
 
     const options: ICustomInterface = {
       limit: Number(limit),
@@ -50,8 +53,6 @@ export const addResult = async (req: Request, res: Response) => {
     const { account } = req;
     const { student, session, term, blocks } = req.body;
 
-    // check if having access
-
     const response = await AddResult({
       organization: account.organization_id,
       student,
@@ -68,10 +69,13 @@ export const addResult = async (req: Request, res: Response) => {
 
 export const getResultById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { result_id } = req.params;
 
-    // check if having access
-    const response = await GetResultById(result_id);
+    const response = await GetResultById(
+      result_id,
+      new ObjectId(account.organization_id)
+    );
 
     return successResponse(res, 200, response);
   } catch (error: any) {
@@ -81,17 +85,15 @@ export const getResultById = async (req: Request, res: Response) => {
 
 export const updateResultById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { result_id } = req.params;
     const { session, term, blocks, status } = req.body;
 
-    // check if having access
-
-    const response = await UpdateResultById(result_id, {
-      session,
-      term,
-      blocks,
-      status,
-    });
+    const response = await UpdateResultById(
+      result_id,
+      new ObjectId(account.organization_id),
+      { session, term, blocks, status }
+    );
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
@@ -100,11 +102,13 @@ export const updateResultById = async (req: Request, res: Response) => {
 
 export const deleteResultById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { result_id } = req.params;
 
-    // check if having access
-
-    const response = await DeleteResultById(result_id);
+    const response = await DeleteResultById(
+      result_id,
+      new ObjectId(account.organization_id)
+    );
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
@@ -113,19 +117,16 @@ export const deleteResultById = async (req: Request, res: Response) => {
 
 export const addResultToResultBlock = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { result_id } = req.params;
     const { subject, mid_term_test, ca_score, exam_score, total, grade } =
       req.body;
 
-    // check if having access
-    const response = await AddToResultBlock(result_id, {
-      subject,
-      mid_term_test,
-      ca_score,
-      exam_score,
-      total,
-      grade,
-    });
+    const response = await AddToResultBlock(
+      result_id,
+      new ObjectId(account.organization_id),
+      { subject, mid_term_test, ca_score, exam_score, total, grade }
+    );
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
@@ -137,12 +138,17 @@ export const updateResultInResultBlock = async (
   res: Response
 ) => {
   try {
+    const { account } = req;
     const { result_id, block_id } = req.params;
     const { subject, mid_term_test, ca_score, exam_score, total, grade } =
       req.body;
-    // check if having access
+
     const response = await UpdateResultBlock(
-      { _id: result_id, "blocks._id": block_id },
+      {
+        _id: result_id,
+        organization: new ObjectId(account.organization_id),
+        "blocks._id": block_id,
+      },
       { subject, mid_term_test, ca_score, exam_score, total, grade }
     );
     return successResponse(res, 200, response);
@@ -156,10 +162,14 @@ export const deleteResultFromResultBlock = async (
   res: Response
 ) => {
   try {
+    const { account } = req;
     const { result_id, block_id } = req.params;
 
-    // check if having access
-    const response = await DeleteResultBlock(result_id, block_id);
+    const response = await DeleteResultBlock(
+      result_id,
+      new ObjectId(account.organization_id),
+      block_id
+    );
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);

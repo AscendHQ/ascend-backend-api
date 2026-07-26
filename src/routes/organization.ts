@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { auth, isAscendAdmin } from "../auth/auth";
+import { hasOrganizationAccess } from "../middlewares/hasOrganizationAccess";
 import {
   getAllOrg,
   getAnOrg,
@@ -11,9 +12,9 @@ const router = Router();
 
 router.get("/", auth, isAscendAdmin, getAllOrg);
 
-router.get("/:org_id", auth, getAnOrg);
+router.get("/:org_id", auth, hasOrganizationAccess, getAnOrg);
 
-router.put("/:org_id", auth, updateOrg);
+router.put("/:org_id", auth, hasOrganizationAccess, updateOrg);
 
 router.delete("/:org_id", auth, isAscendAdmin, deleteOrg);
 

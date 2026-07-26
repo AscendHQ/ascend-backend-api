@@ -6,7 +6,7 @@ import {
   updateAccountProfile,
   deleteAccountProfile,
 } from "../controllers/account.controller";
-import { checkPathPermission } from "../middlewares/checkPathPermission";
+import { hasAccountAccess } from "../middlewares/hasAccountAccess";
 
 const router = Router();
 
@@ -15,12 +15,18 @@ router.get("/", auth, isAscendAdmin, getAllAccounts);
 router.get(
   "/:account_id",
   auth,
-  checkPathPermission,
+  hasAccountAccess,
   isEmailVerified,
   getAccountProfile
 );
 
-router.put("/:account_id", auth, isEmailVerified, updateAccountProfile);
+router.put(
+  "/:account_id",
+  auth,
+  hasAccountAccess,
+  isEmailVerified,
+  updateAccountProfile
+);
 
 router.delete("/:account_id", auth, isAscendAdmin, deleteAccountProfile);
 

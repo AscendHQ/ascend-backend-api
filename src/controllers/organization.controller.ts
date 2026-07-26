@@ -33,7 +33,6 @@ export const getAnOrg = async (req: Request, res: Response) => {
   try {
     const { org_id } = req.params;
 
-    // check if having access
     const response = await GetOrganizationById(org_id);
     return successResponse(res, 200, response);
   } catch (error: any) {
@@ -45,10 +44,6 @@ export const updateOrg = async (req: Request, res: Response) => {
   try {
     const { org_id } = req.params;
     const { name, description, organization_logo, address } = req.body;
-
-    // check if having access
-
-    // upload organization logo
 
     const response = await UpdateOrganization(org_id, {
       name,

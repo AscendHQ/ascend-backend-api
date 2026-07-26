@@ -40,8 +40,6 @@ export const getAccountProfile = async (req: Request, res: Response) => {
   try {
     const { account_id } = req.params;
 
-    //check if having access
-
     const response = await GetAccountById(account_id);
     return successResponse(res, 200, response);
   } catch (error: any) {
@@ -53,8 +51,6 @@ export const updateAccountProfile = async (req: Request, res: Response) => {
   try {
     const { account_id } = req.params;
     const { first_name, last_name } = req.body;
-
-    // check if having access
 
     const response = await UpdateAccountById(account_id, {
       first_name,

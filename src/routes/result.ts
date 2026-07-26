@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { auth, isAscendAdmin } from "../auth/auth";
+import { auth } from "../auth/auth";
+import { checkPathPermission } from "../middlewares/checkPathPermission";
 import {
   addResult,
   addResultToResultBlock,
@@ -13,20 +14,30 @@ import {
 
 const router = Router();
 
-router.get("/", auth, isAscendAdmin, getAllResults);
+router.get("/", auth, checkPathPermission, getAllResults);
 
-router.post("/", auth, addResult);
+router.post("/", auth, checkPathPermission, addResult);
 
-router.get("/:result_id", auth, getResultById);
+router.get("/:result_id", auth, checkPathPermission, getResultById);
 
-router.put("/:result_id", auth, updateResultById);
+router.put("/:result_id", auth, checkPathPermission, updateResultById);
 
-router.delete("/:result_id", auth, deleteResultById);
+router.delete("/:result_id", auth, checkPathPermission, deleteResultById);
 
-router.patch("/:result_id", auth, addResultToResultBlock);
+router.patch("/:result_id", auth, checkPathPermission, addResultToResultBlock);
 
-router.patch("/:result_id/:block_id", auth, updateResultInResultBlock);
+router.patch(
+  "/:result_id/:block_id",
+  auth,
+  checkPathPermission,
+  updateResultInResultBlock
+);
 
-router.delete("/:result_id/:block_id", auth, deleteResultFromResultBlock);
+router.delete(
+  "/:result_id/:block_id",
+  auth,
+  checkPathPermission,
+  deleteResultFromResultBlock
+);
 
 export default router;

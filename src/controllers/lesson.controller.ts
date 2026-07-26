@@ -12,6 +12,7 @@ import {
 
 export const getAllLessons = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const {
       limit = 10,
       page = 1,
@@ -21,7 +22,9 @@ export const getAllLessons = async (req: Request, res: Response) => {
       status,
     } = req.query;
 
-    const query: ICustomInterface = {};
+    const query: ICustomInterface = {
+      organization: new ObjectId(account.organization_id),
+    };
 
     const options: ICustomInterface = {
       limit: Number(limit),
@@ -65,10 +68,13 @@ export const addLesson = async (req: Request, res: Response) => {
 
 export const getLessonById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { lesson_id } = req.params;
 
-    // checking if having access
-    const response = await GetLessonById(lesson_id);
+    const response = await GetLessonById(
+      lesson_id,
+      new ObjectId(account.organization_id)
+    );
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
@@ -77,20 +83,31 @@ export const getLessonById = async (req: Request, res: Response) => {
 
 export const updateLessonById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { lesson_id } = req.params;
-    const { title, subject, class_id, duration, lesson_plan, objectives } =
-      req.body;
-
-    // checking if having access
-
-    const response = await UpdateLessonById(lesson_id, {
+    const {
       title,
       subject,
       class_id,
       duration,
       lesson_plan,
       objectives,
-    });
+      status,
+    } = req.body;
+
+    const response = await UpdateLessonById(
+      lesson_id,
+      new ObjectId(account.organization_id),
+      {
+        title,
+        subject,
+        class: class_id,
+        duration,
+        lesson_plan,
+        objectives,
+        status,
+      }
+    );
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
@@ -99,9 +116,13 @@ export const updateLessonById = async (req: Request, res: Response) => {
 
 export const deleteLessonById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { lesson_id } = req.params;
 
-    const response = await DeleteLessonById(lesson_id);
+    const response = await DeleteLessonById(
+      lesson_id,
+      new ObjectId(account.organization_id)
+    );
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);

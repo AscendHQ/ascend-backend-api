@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { parse } from "csv-parse/sync";
+import { ObjectId } from "mongodb";
 import {
   AddHostel,
   GetAllHostel,
@@ -126,9 +127,13 @@ export const bulkAddHostel = async (req: Request, res: Response) => {
 
 export const getHostelById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { hostel_id } = req.params;
 
-    const hostel = await GetHostelById(hostel_id);
+    const hostel = await GetHostelById(
+      hostel_id,
+      new ObjectId(account.organization_id)
+    );
 
     return successResponse(res, 200, hostel);
   } catch (error: any) {
@@ -138,6 +143,7 @@ export const getHostelById = async (req: Request, res: Response) => {
 
 export const updateHostelById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { hostel_id } = req.params;
     const {
       name,
@@ -154,20 +160,24 @@ export const updateHostelById = async (req: Request, res: Response) => {
       room_fee_payment_period,
     } = req.body;
 
-    const response = await UpdateHostelById(hostel_id, {
-      name,
-      capacity,
-      gender_type,
-      room_type,
-      available_amenities,
-      staff_name,
-      staff_contact_number,
-      other_notes,
-      students,
-      room_naming_convention,
-      room_fee,
-      room_fee_payment_period,
-    });
+    const response = await UpdateHostelById(
+      hostel_id,
+      new ObjectId(account.organization_id),
+      {
+        name,
+        capacity,
+        gender_type,
+        room_type,
+        available_amenities,
+        staff_name,
+        staff_contact_number,
+        other_notes,
+        students,
+        room_naming_convention,
+        room_fee,
+        room_fee_payment_period,
+      }
+    );
 
     return successResponse(res, 200, response);
   } catch (error: any) {
@@ -177,9 +187,13 @@ export const updateHostelById = async (req: Request, res: Response) => {
 
 export const deleteHostelById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { hostel_id } = req.params;
 
-    const response = await DeleteHostelById(hostel_id);
+    const response = await DeleteHostelById(
+      hostel_id,
+      new ObjectId(account.organization_id)
+    );
 
     return successResponse(res, 200, response);
   } catch (error: any) {

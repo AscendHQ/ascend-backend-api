@@ -60,13 +60,16 @@ export const updateClassById = async (req: Request, res: Response) => {
     const { class_id } = req.params;
     const { name, level, section, other_section } = req.body;
 
-    const response = await UpdateClassById(class_id, {
-      organization: account.organization_id,
-      name,
-      level,
-      section,
-      other_section,
-    });
+    const response = await UpdateClassById(
+      class_id,
+      new ObjectId(account.organization_id),
+      {
+        name,
+        level,
+        section,
+        other_section,
+      }
+    );
 
     return successResponse(res, 200, response);
   } catch (error: any) {
@@ -76,9 +79,13 @@ export const updateClassById = async (req: Request, res: Response) => {
 
 export const deleteClassById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { class_id } = req.params;
 
-    const response = await DeleteClassById(class_id);
+    const response = await DeleteClassById(
+      class_id,
+      new ObjectId(account.organization_id)
+    );
 
     return successResponse(res, 200, response);
   } catch (error: any) {

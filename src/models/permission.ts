@@ -7,6 +7,8 @@ const permissionSchemaFields: Record<keyof IPermissions, any> = {
     ref: "organization",
     required: true,
   },
+  name: { type: String, required: true },
+  description: { type: String },
   staff: {
     create: { type: Boolean, default: false },
     view: { type: Boolean, default: false },
@@ -74,6 +76,12 @@ const permissionSchemaFields: Record<keyof IPermissions, any> = {
     delete: { type: Boolean, default: false },
   },
   payroll: {
+    create: { type: Boolean, default: false },
+    view: { type: Boolean, default: false },
+    edit: { type: Boolean, default: false },
+    delete: { type: Boolean, default: false },
+  },
+  roles: {
     create: { type: Boolean, default: false },
     view: { type: Boolean, default: false },
     edit: { type: Boolean, default: false },

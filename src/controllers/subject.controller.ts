@@ -57,15 +57,20 @@ export const addSubject = async (req: Request, res: Response) => {
 
 export const updateSubjectById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { subject_id } = req.params;
     const { name, code, type, level, classes } = req.body;
-    const response = await UpdateSubjectById(subject_id, {
-      name,
-      code,
-      type,
-      level,
-      classes,
-    });
+    const response = await UpdateSubjectById(
+      subject_id,
+      new ObjectId(account.organization_id),
+      {
+        name,
+        code,
+        type,
+        level,
+        classes,
+      }
+    );
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
@@ -74,9 +79,13 @@ export const updateSubjectById = async (req: Request, res: Response) => {
 
 export const deleteSubjectById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { subject_id } = req.params;
 
-    const response = await DeleteSubjectById(subject_id);
+    const response = await DeleteSubjectById(
+      subject_id,
+      new ObjectId(account.organization_id)
+    );
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);

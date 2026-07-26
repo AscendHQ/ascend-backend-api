@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { parse } from "csv-parse/sync";
+import { ObjectId } from "mongodb";
 import { errorResponse, successResponse } from "../utils/responseHandler";
 import { ICustomInterface } from "../interface";
 import {
@@ -157,6 +158,7 @@ export const bulkAddStudent = async (req: Request, res: Response) => {
 
 export const updateStudentById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { student_id } = req.params;
     const {
       personal_information,
@@ -169,16 +171,20 @@ export const updateStudentById = async (req: Request, res: Response) => {
       is_active,
     } = req.body;
 
-    const response = await UpdateStudentById(student_id, {
-      personal_information,
-      contact_information,
-      guardian_information,
-      academic_details,
-      accommodation,
-      medical_information,
-      additional_information,
-      is_active,
-    });
+    const response = await UpdateStudentById(
+      student_id,
+      new ObjectId(account.organization_id),
+      {
+        personal_information,
+        contact_information,
+        guardian_information,
+        academic_details,
+        accommodation,
+        medical_information,
+        additional_information,
+        is_active,
+      }
+    );
 
     return successResponse(res, 200, response);
   } catch (error: any) {
@@ -188,9 +194,13 @@ export const updateStudentById = async (req: Request, res: Response) => {
 
 export const deleteStudentById = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { student_id } = req.params;
 
-    const response = await DeleteStudentById(student_id);
+    const response = await DeleteStudentById(
+      student_id,
+      new ObjectId(account.organization_id)
+    );
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);

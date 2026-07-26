@@ -1,11 +1,13 @@
+import { ObjectId } from "mongodb";
 import { IResultBlocks } from "../../interface";
 import ResultModel from "../../models/result";
 
 export const AddToResultBlock = async (
   result_id: string,
+  organization: ObjectId,
   result_block: IResultBlocks
 ) => {
-  const result = await ResultModel.findById(result_id);
+  const result = await ResultModel.findOne({ _id: result_id, organization });
 
   if (!result) return result;
 

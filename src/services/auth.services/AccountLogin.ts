@@ -13,7 +13,7 @@ export const AccountLogin = async (email: string, password: string) => {
     throw new Error("Invalid Credentials");
   }
 
-  const token = SignToken({
+  const access_token = SignToken({
     account_id: account._id,
     access_level: account.access_level,
     organization_id: account.organization as string,
@@ -21,5 +21,16 @@ export const AccountLogin = async (email: string, password: string) => {
     permission: account.permission as string,
   });
 
-  return token;
+  return {
+    access_token,
+    account: {
+      _id: account._id,
+      first_name: account.first_name,
+      last_name: account.last_name,
+      email: account.email,
+      organization: account.organization,
+      access_level: account.access_level,
+      is_email_verified: account.is_email_verified,
+    },
+  };
 };

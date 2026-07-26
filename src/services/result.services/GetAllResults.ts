@@ -7,6 +7,8 @@ export const GetAllResults = async (
 ) => {
   const { limit, page } = options;
   const results = await ResultModel.find(query)
+    .populate("student")
+    .sort({ createdAt: -1 })
     .limit(limit)
     .skip((page - 1) * limit);
 

@@ -53,6 +53,8 @@ import studentRouter from "./routes/student";
 import hostelRouter from "./routes/hostel";
 import dashboardRouter from "./routes/dashboard";
 import subjectRegistrationRouter from "./routes/student_registration";
+import payrollRouter from "./routes/payroll";
+import permissionRouter from "./routes/permission";
 
 import accountRouter from "./routes/account";
 import organizationRouter from "./routes/organization";
@@ -68,13 +70,13 @@ app.use("/students", studentRouter);
 app.use("/hostels", hostelRouter);
 app.use("/dashboard", dashboardRouter);
 app.use("/registrations", subjectRegistrationRouter);
+app.use("/payrolls", payrollRouter);
+app.use("/roles", permissionRouter);
 
-// commented out as they want to release one feature at a time
-
-// app.use("/organizations", organizationRouter);
-// app.use("/accounts", accountRouter);
-// app.use("/lessons", lessonRouter);
-// app.use("/results", resultRouter);
+app.use("/lessons", lessonRouter);
+app.use("/results", resultRouter);
+app.use("/organizations", organizationRouter);
+app.use("/accounts", accountRouter);
 
 app.use("*", (req: Request, res: Response) => {
   const path = req.originalUrl;

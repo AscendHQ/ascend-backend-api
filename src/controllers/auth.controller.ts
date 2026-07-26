@@ -57,6 +57,8 @@ export const signUpOrganization = async (req: Request, res: Response) => {
 
     const permission = await CreatePermission({
       organization: organization._id,
+      name: "Admin",
+      description: "Full access to every module. Assigned to the school's primary account.",
       dashboard: { create: true, view: true, edit: true, delete: true },
       staff: { create: true, view: true, edit: true, delete: true },
       students: { create: true, view: true, edit: true, delete: true },
@@ -69,6 +71,7 @@ export const signUpOrganization = async (req: Request, res: Response) => {
       results: { create: true, view: true, edit: true, delete: true },
       administration: { create: true, view: true, edit: true, delete: true },
       payroll: { create: true, view: true, edit: true, delete: true },
+      roles: { create: true, view: true, edit: true, delete: true },
     });
 
     const response = await CreateAccount({

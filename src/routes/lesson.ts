@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { auth, isAscendAdmin } from "../auth/auth";
+import { auth } from "../auth/auth";
+import { checkPathPermission } from "../middlewares/checkPathPermission";
 import {
   getAllLessons,
   addLesson,
@@ -10,14 +11,14 @@ import {
 
 const router = Router();
 
-router.get("/", auth, isAscendAdmin, getAllLessons);
+router.get("/", auth, checkPathPermission, getAllLessons);
 
-router.post("/", auth, addLesson);
+router.post("/", auth, checkPathPermission, addLesson);
 
-router.get("/:lesson_id", auth, getLessonById);
+router.get("/:lesson_id", auth, checkPathPermission, getLessonById);
 
-router.put("/:lesson_id", auth, updateLessonById);
+router.put("/:lesson_id", auth, checkPathPermission, updateLessonById);
 
-router.delete("/:lesson_id", auth, deleteLessonById);
+router.delete("/:lesson_id", auth, checkPathPermission, deleteLessonById);
 
 export default router;
