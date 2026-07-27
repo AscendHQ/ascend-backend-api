@@ -15,6 +15,7 @@ let whitelist: string[] = [
   "https://www.ascend.africa",
   "ascend.africa",
   "https://staging.ascend.africa",
+  "https://ascend-frontend-sywa.vercel.app",
 ];
 
 if (NODE_ENV !== "production") {
