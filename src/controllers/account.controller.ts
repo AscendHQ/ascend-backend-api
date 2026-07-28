@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { ObjectId } from "mongodb";
 import { errorResponse, successResponse } from "../utils/responseHandler";
 import { ICustomInterface } from "../interface";
 import {
@@ -7,12 +8,16 @@ import {
   GetAllAccounts,
   UpdateAccountById,
 } from "../services/account.services";
+import { InviteStaffToOrganization } from "../services/organization.services";
 
 export const getAllAccounts = async (req: Request, res: Response) => {
   try {
+    const { account } = req;
     const { limit = 10, page = 1, email, first_name, last_name } = req.query;
 
-    const query: ICustomInterface = {};
+    const query: ICustomInterface = {
+      organization: new ObjectId(account.organization_id),
+    };
 
     const options: ICustomInterface = {
       limit: Number(limit),
@@ -33,6 +38,29 @@ export const getAllAccounts = async (req: Request, res: Response) => {
     return successResponse(res, 200, responses);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
+  }
+};
+
+export const inviteStaffToOrganization = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { account } = req;
+    const { first_name, last_name, email, password, permission } = req.body;
+
+    const response = await InviteStaffToOrganization({
+      organization: account.organization_id,
+      first_name,
+      last_name,
+      email,
+      password,
+      permission,
+    });
+
+    return successResponse(res, 201, response);
+  } catch (error: any) {
+    return errorResponse(res, 400, error.message);
   }
 };
 
