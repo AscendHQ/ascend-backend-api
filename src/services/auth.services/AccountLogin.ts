@@ -13,7 +13,7 @@ export const AccountLogin = async (email: string, password: string) => {
     throw new Error("Invalid Credentials");
   }
 
-  const access_token = SignToken({
+  const { access_token } = await SignToken({
     account_id: account._id,
     access_level: account.access_level,
     organization_id: account.organization as string,
