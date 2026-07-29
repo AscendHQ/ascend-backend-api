@@ -7,6 +7,8 @@ export const AddExtraSubject = async (payload: ISubjectRegistration) => {
       organization: payload.organization,
       student: payload.student,
       class: payload.class,
+      session: payload.session,
+      term: payload.term,
     },
     payload,
     { new: true, upsert: true, setDefaultsOnInsert: true }

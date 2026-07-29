@@ -29,13 +29,15 @@ export const getStudentRegistration = async (req: Request, res: Response) => {
   try {
     const { account } = req;
     const { student_id } = req.params;
-    const { class_id } = req.query;
+    const { class_id, session, term } = req.query;
 
     const query: ICustomInterface = {
       organization: new ObjectId(account.organization_id),
       student: new ObjectId(student_id),
       class: new ObjectId(class_id as string),
     };
+    if (session) query.session = session;
+    if (term) query.term = term;
 
     const response = await GetStudentRegistration(query);
 
@@ -48,12 +50,15 @@ export const getStudentRegistration = async (req: Request, res: Response) => {
 export const addExtraSubject = async (req: Request, res: Response) => {
   try {
     const { account } = req;
-    const { student, class_id, additional_subjects } = req.body;
+    const { student, class_id, session, term, additional_subjects } =
+      req.body;
 
     const response = await AddExtraSubject({
       organization: account.organization_id,
       student,
       class: class_id,
+      session,
+      term,
       additional_subjects,
     });
 
