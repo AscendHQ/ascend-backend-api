@@ -1,7 +1,29 @@
 import { NextFunction, Request, Response } from "express";
 import { GetPermissionById } from "../services/permission.services";
 import { errorResponse } from "../utils/responseHandler";
-import { ObjectId } from "mongodb";
+
+// Explicit mapping from a route's first path segment to the permission
+// module that should actually gate it. This replaces a previous scheme
+// that guessed the module by comparing the first 2 letters of the URL
+// against the first 2 letters of each permission key - which silently
+// broke whenever two modules shared a prefix (e.g. "staff" and
+// "students" both start with "st", so every request to /students was
+// actually being checked against the Staff permission instead).
+const ROUTE_TO_MODULE: Record<string, string> = {
+  staffs: "staff",
+  dashboard: "dashboard",
+  students: "students",
+  subjects: "subjects",
+  classes: "classes",
+  hostels: "hostels",
+  lessons: "lesson_plan",
+  results: "results",
+  payrolls: "payroll",
+  roles: "roles",
+  // Subject registration doesn't have its own dedicated permission
+  // module yet, so it's gated by the Subjects permission for now.
+  registrations: "subjects",
+};
 
 export const checkPathPermission = async (
   req: Request,
@@ -13,8 +35,6 @@ export const checkPathPermission = async (
     account.permission
   );
 
-  // check why the account organization and the permission organization are not the same and user is not an admin on ascend
-  // new ObjectId(account.organization_id) !== permission.organization,
   if (!permission) {
     return errorResponse(res, 401, "Unauthorized");
   }
@@ -29,16 +49,16 @@ export const checkPathPermission = async (
 
   const method_action = map_method_to_action[method];
 
-  const path_prefix = originalUrl.substring(1, 4);
+  const pathOnly = originalUrl.split("?")[0];
+  const resource = pathOnly.split("/").filter(Boolean)[0];
+  const moduleKey = ROUTE_TO_MODULE[resource];
 
-  for (const each_permission in permission) {
-    if (path_prefix.startsWith(each_permission.substring(0, 2))) {
-      if (permission[each_permission][method_action]) {
-        return next();
-      }
+  if (!moduleKey || !permission[moduleKey]) {
+    return errorResponse(res, 401, "Unauthorized");
+  }
 
-      return errorResponse(res, 401, "Unauthorized");
-    }
+  if (permission[moduleKey][method_action]) {
+    return next();
   }
 
   return errorResponse(res, 401, "Unauthorized");
