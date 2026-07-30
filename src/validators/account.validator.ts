@@ -3,10 +3,10 @@ import bodyValidator from "../utils/bodyValidator";
 
 const passwordValidator = Joi.string()
   .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/)
-  .required()
   .message(
     "Password must contain at least one lowercase letter, one uppercase letter, one digit, one special character, and be at least 8 characters long."
-  );
+  )
+  .required();
 
 const inviteStaffSchema = Joi.object().keys({
   first_name: Joi.string().required().min(2),
