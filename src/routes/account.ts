@@ -8,6 +8,7 @@ import {
   inviteStaffToOrganization,
 } from "../controllers/account.controller";
 import { hasAccountAccess } from "../middlewares/hasAccountAccess";
+import { hasAdministrationAccess } from "../middlewares/hasAdministrationAccess";
 import { accountValidator } from "../validators/account.validator";
 
 const router = Router();
@@ -17,11 +18,14 @@ const router = Router();
 // this can't leak another school's accounts.
 router.get("/", auth, getAllAccounts);
 
-// Only an elevated/admin-level account can add a new team member.
+// Any account with administration permission in their own school can
+// invite staff - not gated by isAscendAdmin, since that's reserved for
+// Ascend's own cross-organization actions and would incorrectly block
+// every school's own founding admin.
 router.post(
   "/invite",
   auth,
-  isAscendAdmin,
+  hasAdministrationAccess,
   accountValidator.inviteStaff,
   inviteStaffToOrganization
 );
