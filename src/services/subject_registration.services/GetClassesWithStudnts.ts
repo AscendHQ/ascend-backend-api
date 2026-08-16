@@ -9,8 +9,24 @@ export const GetClassesWithStudents = async (query: ICustomInterface) => {
     {
       $lookup: {
         from: "students",
-        localField: "_id",
-        foreignField: "academic_details.class",
+        let: {
+          classId: "$_id",
+          organizationId: "$organization",
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$academic_details.class", "$$classId"] },
+                  { $eq: ["$organization", "$$organizationId"] },
+                  { $eq: ["$is_active", true] },
+                  { $eq: ["$is_deleted", false] },
+                ],
+              },
+            },
+          },
+        ],
         as: "students",
       },
     },
