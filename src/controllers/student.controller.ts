@@ -83,7 +83,7 @@ export const addStudent = async (req: Request, res: Response) => {
       additional_information,
     });
 
-    UpdateOrganization(account.organization_id, {
+    await UpdateOrganization(account.organization_id, {
       last_student_id: response.registration_number,
     });
 
@@ -185,6 +185,10 @@ export const updateStudentById = async (req: Request, res: Response) => {
         is_active,
       }
     );
+
+    if (!response) {
+      return errorResponse(res, 404, "Student not found");
+    }
 
     return successResponse(res, 200, response);
   } catch (error: any) {

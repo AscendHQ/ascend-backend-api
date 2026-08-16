@@ -8,6 +8,23 @@ import {
   GetStudentRegistration,
   UpdateExtraSubject,
 } from "../services/subject_registration.services";
+import StudentModel from "../models/student";
+
+const ensureActiveStudent = async (
+  studentId: string,
+  organizationId: string
+) => {
+  const student = await StudentModel.exists({
+    _id: new ObjectId(studentId),
+    organization: new ObjectId(organizationId),
+    is_active: true,
+    is_deleted: false,
+  });
+
+  if (!student) {
+    throw new Error("Only active students can be registered for subjects");
+  }
+};
 
 export const getClassesWithStudents = async (req: Request, res: Response) => {
   try {
@@ -31,6 +48,8 @@ export const getStudentRegistration = async (req: Request, res: Response) => {
     const { student_id } = req.params;
     const { class_id, session, term } = req.query;
 
+    await ensureActiveStudent(student_id, account.organization_id);
+
     const query: ICustomInterface = {
       organization: new ObjectId(account.organization_id),
       student: new ObjectId(student_id),
@@ -52,6 +71,8 @@ export const addExtraSubject = async (req: Request, res: Response) => {
     const { account } = req;
     const { student, class_id, session, term, additional_subjects } =
       req.body;
+
+    await ensureActiveStudent(student, account.organization_id);
 
     const response = await AddExtraSubject({
       organization: account.organization_id,

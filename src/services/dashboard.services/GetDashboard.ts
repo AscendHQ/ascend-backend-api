@@ -3,12 +3,18 @@ import StudentModel from "../../models/student";
 import StaffModel from "../../models/staff";
 
 export const GetDashboard = async (query: ICustomInterface) => {
-  const total_student = await StudentModel.countDocuments(query);
+  const activeStudentQuery = {
+    ...query,
+    is_active: true,
+    is_deleted: false,
+  };
+
+  const total_student = await StudentModel.countDocuments(activeStudentQuery);
   const total_staff = await StaffModel.countDocuments(query);
 
   const genderDemographic = await StudentModel.aggregate([
     {
-      $match: query,
+      $match: activeStudentQuery,
     },
     {
       $group: {
@@ -21,9 +27,9 @@ export const GetDashboard = async (query: ICustomInterface) => {
   const gender_demographic: ICustomInterface = {};
 
   genderDemographic.forEach((item: any) => {
-    gender_demographic[item._id] = ((item.count / total_student) * 100).toFixed(
-      2
-    );
+    gender_demographic[item._id] = total_student
+      ? ((item.count / total_student) * 100).toFixed(2)
+      : "0.00";
   });
 
   return {

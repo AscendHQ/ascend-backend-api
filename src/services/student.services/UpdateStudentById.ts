@@ -10,8 +10,8 @@ export const UpdateStudentById = async (
 ) => {
   const student = await StudentModel.findOneAndUpdate(
     { _id: student_id, organization },
-    update,
-    { new: true }
+    { $set: update },
+    { new: true, runValidators: true }
   );
 
   return student;
