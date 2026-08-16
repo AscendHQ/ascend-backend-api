@@ -186,6 +186,10 @@ export const updateStudentById = async (req: Request, res: Response) => {
       }
     );
 
+    if (!response) {
+      return errorResponse(res, 404, "Student not found");
+    }
+
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
