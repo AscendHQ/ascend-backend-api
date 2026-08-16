@@ -12,6 +12,8 @@ export interface IStudentPersonalInfo {
   dob: Date;
   religion: string;
   nationality: string;
+  state_of_origin?: string;
+  local_government_area?: string;
 }
 
 export interface IStudent {

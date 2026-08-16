@@ -83,7 +83,7 @@ export const addStudent = async (req: Request, res: Response) => {
       additional_information,
     });
 
-    UpdateOrganization(account.organization_id, {
+    await UpdateOrganization(account.organization_id, {
       last_student_id: response.registration_number,
     });
 

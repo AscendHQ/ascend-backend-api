@@ -16,6 +16,8 @@ const studentSchemaFields: Record<keyof IStudent, any> = {
     dob: { type: Date },
     religion: { type: String },
     nationality: { type: String },
+    state_of_origin: { type: String },
+    local_government_area: { type: String },
   },
   contact_information: {
     residential_address: { type: String },
