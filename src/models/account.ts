@@ -10,6 +10,7 @@ const accountSchemaFields: Record<keyof IAccount, any> = {
   first_name: { type: String },
   last_name: { type: String },
   email: { type: String, required: true, unique: true },
+  login_id: { type: String, unique: true, sparse: true, trim: true, lowercase: true },
   password: { type: String },
   organization: {
     type: Schema.Types.ObjectId,

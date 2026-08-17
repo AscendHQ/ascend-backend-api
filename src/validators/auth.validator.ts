@@ -9,9 +9,10 @@ const passwordValidator = Joi.string()
   );
 
 const loginSchema = Joi.object().keys({
-  email: emailValidator,
+  identifier: Joi.string().trim().min(1),
+  email: Joi.string().trim().min(1),
   password: passwordValidator,
-});
+}).or("identifier", "email");
 
 const signupSchema = Joi.object().keys({
   organization_name: Joi.string().required().min(5),

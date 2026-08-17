@@ -14,6 +14,7 @@ export interface IAccount {
   first_name: string;
   last_name: string;
   email: string;
+  login_id?: string;
   password: string;
   organization: string | IOrganizationDocument;
   permission: string | IPermissionsDocument;

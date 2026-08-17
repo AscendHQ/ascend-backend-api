@@ -42,35 +42,34 @@ export const createStudentPortalAccount = async (
 ) => {
   let createdAccountId: ObjectId | undefined;
   try {
-    const { student_id, email, password } = req.body;
+    const { student_id, password } = req.body;
     if (
       !ObjectId.isValid(student_id) ||
-      typeof email !== "string" ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
       typeof password !== "string" ||
       !PASSWORD_PATTERN.test(password)
     ) {
       return errorResponse(res, 400, "Valid student portal details are required");
-    }
-    const normalizedEmail = email.trim().toLowerCase();
-    if (await AccountModel.exists({ email: normalizedEmail })) {
-      return errorResponse(res, 409, "An account with this email already exists");
     }
     const organization = new ObjectId(req.account.organization_id);
     const student = await StudentModel.findOne({
       _id: new ObjectId(student_id),
       organization,
       is_deleted: false,
-    }).select("personal_information");
+    }).select("personal_information registration_number");
     if (!student) return errorResponse(res, 404, "Student not found");
     if (await StudentProfileModel.exists({ organization, student: student._id })) {
       return errorResponse(res, 409, "This student already has a portal account");
+    }
+    const loginId = student.registration_number.trim().toLowerCase();
+    if (await AccountModel.exists({ login_id: loginId })) {
+      return errorResponse(res, 409, "This registration number already has an account");
     }
     const permission = await getStudentPermission(organization);
     const portalAccount = await AccountModel.create({
       first_name: student.personal_information.first_name,
       last_name: student.personal_information.last_name,
-      email: normalizedEmail,
+      email: `student-${student._id}@portal.ascend.invalid`,
+      login_id: loginId,
       password: await hash(password, 10),
       organization,
       permission: permission._id,
@@ -86,7 +85,10 @@ export const createStudentPortalAccount = async (
       student: student._id,
       created_by: new ObjectId(req.account.account_id),
     });
-    return successResponse(res, 201, { profile, email: portalAccount.email });
+    return successResponse(res, 201, {
+      profile,
+      login_id: student.registration_number,
+    });
   } catch (error: any) {
     if (createdAccountId) await AccountModel.deleteOne({ _id: createdAccountId });
     return errorResponse(res, 500, error.message);
@@ -98,7 +100,7 @@ export const getStudentPortalAccounts = async (req: Request, res: Response) => {
     const profiles = await StudentProfileModel.find({
       organization: new ObjectId(req.account.organization_id),
     })
-      .populate({ path: "account", select: "first_name last_name email account_type" })
+      .populate({ path: "account", select: "first_name last_name login_id account_type" })
       .populate({
         path: "student",
         select: "registration_number personal_information academic_details.class",

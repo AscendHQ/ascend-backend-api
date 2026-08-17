@@ -1,11 +1,50 @@
 import { compare } from "bcryptjs";
 import AccountModel from "../../models/account";
 import PermissionModel from "../../models/permission";
+import StudentModel from "../../models/student";
+import StudentProfileModel from "../../models/student_profile";
 import { EAccountType } from "../../interface";
 import { SignToken } from "./SignToken";
 
-export const AccountLogin = async (email: string, password: string) => {
-  const account = await AccountModel.findOne({ email });
+const escapeRegex = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const findStudentAccount = async (loginId: string) => {
+  const student = await StudentModel.findOne({
+    registration_number: {
+      $regex: new RegExp(`^${escapeRegex(loginId)}$`, "i"),
+    },
+    is_deleted: false,
+  }).select("_id registration_number");
+  if (!student) return null;
+
+  const profile = await StudentProfileModel.findOne({ student: student._id });
+  if (!profile) return null;
+
+  const account = await AccountModel.findOne({
+    _id: profile.account,
+    account_type: EAccountType.STUDENT,
+  });
+  if (!account) return null;
+
+  const normalizedRegistrationNumber = student.registration_number.toLowerCase();
+  if (!account.login_id) {
+    account.login_id = normalizedRegistrationNumber;
+    await account.save();
+  }
+  return account;
+};
+
+export const AccountLogin = async (identifier: string, password: string) => {
+  const normalizedIdentifier = identifier.trim().toLowerCase();
+  let account = await AccountModel.findOne({
+    $or: [
+      { email: normalizedIdentifier },
+      { login_id: normalizedIdentifier },
+    ],
+  });
+
+  if (!account) account = await findStudentAccount(normalizedIdentifier);
 
   if (!account) {
     throw new Error("Invalid Credentials");

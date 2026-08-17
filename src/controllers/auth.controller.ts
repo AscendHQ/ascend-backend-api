@@ -93,11 +93,12 @@ export const signUpOrganization = async (req: Request, res: Response) => {
 
 export const accountLogin = async (req: Request, res: Response) => {
   try {
-    let { email, password } = req.body;
+    const { password } = req.body;
+    const identifier = String(req.body.identifier ?? req.body.email)
+      .trim()
+      .toLowerCase();
 
-    email = email.toLowerCase();
-
-    const response = await AccountLogin(email, password);
+    const response = await AccountLogin(identifier, password);
     return successResponse(res, 200, response);
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
