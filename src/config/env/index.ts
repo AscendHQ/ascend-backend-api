@@ -24,4 +24,8 @@ export const config: EnvConfigType = {
   EMAIL_PASS: envVariables.EMAIL_PASS,
   EMAIL_HOST: envVariables.EMAIL_HOST,
   EMAIL_PORT: envVariables.EMAIL_PORT,
+  PAYSTACK_SECRET_KEY: envVariables.PAYSTACK_SECRET_KEY,
+  PAYMENT_LINK_SECRET:
+    envVariables.PAYMENT_LINK_SECRET || envVariables.JWT_SECRET,
+  FRONTEND_APP_URL: envVariables.FRONTEND_APP_URL,
 };

@@ -18,4 +18,7 @@ export const schema = {
   EMAIL_PASS: Joi.string().required(),
   EMAIL_HOST: Joi.string().required(),
   EMAIL_PORT: Joi.number().default(465),
+  PAYSTACK_SECRET_KEY: Joi.string().allow("").default(""),
+  PAYMENT_LINK_SECRET: Joi.string().allow("").default(""),
+  FRONTEND_APP_URL: Joi.string().default("http://localhost:3000"),
 };

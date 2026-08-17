@@ -62,6 +62,8 @@ export interface IPayment {
   note?: string;
   paid_at: Date;
   recorded_by?: string;
+  provider?: string;
+  channel?: string;
 }
 
 export interface IPaymentDocument extends IPayment, Document {}

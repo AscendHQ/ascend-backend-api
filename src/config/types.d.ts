@@ -12,4 +12,7 @@ export type EnvConfigType = {
   EMAIL_PASS: string;
   EMAIL_HOST: string;
   EMAIL_PORT: number;
+  PAYSTACK_SECRET_KEY: string;
+  PAYMENT_LINK_SECRET: string;
+  FRONTEND_APP_URL: string;
 };

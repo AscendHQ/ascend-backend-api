@@ -23,6 +23,8 @@ const paymentSchema = new Schema(
     note: { type: String, trim: true, maxlength: 250 },
     paid_at: { type: Date, required: true, default: Date.now },
     recorded_by: { type: Schema.Types.ObjectId, ref: "account" },
+    provider: { type: String, trim: true },
+    channel: { type: String, trim: true },
   },
   { timestamps: true },
 );
