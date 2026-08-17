@@ -33,6 +33,30 @@ const studentSchemaFields: Record<keyof IStudent, any> = {
   academic_details: {
     class: { type: Schema.Types.ObjectId, ref: "class" },
     previous_school: { type: String },
+    current_session: { type: String },
+    current_term: { type: String },
+    progression_history: [
+      {
+        from_session: { type: String, required: true },
+        from_term: { type: String, required: true },
+        from_class: {
+          type: Schema.Types.ObjectId,
+          ref: "class",
+          required: true,
+        },
+        to_session: { type: String, required: true },
+        to_term: { type: String, required: true },
+        to_class: { type: Schema.Types.ObjectId, ref: "class" },
+        decision: {
+          type: String,
+          enum: ["advanced", "promoted", "repeated", "graduated"],
+          required: true,
+        },
+        result_average: { type: Number },
+        processed_at: { type: Date, default: Date.now },
+        processed_by: { type: Schema.Types.ObjectId, ref: "account" },
+      },
+    ],
   },
   accommodation: {
     block: { type: String },

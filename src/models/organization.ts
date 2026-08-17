@@ -18,6 +18,15 @@ const organizationSchemaFields: Record<keyof IOrganization, any> = {
   slug: { type: String },
   last_staff_id: { type: String },
   last_student_id: { type: String },
+  academic_settings: {
+    current_session: { type: String },
+    current_term: {
+      type: String,
+      enum: ["1st Term", "2nd Term", "3rd Term"],
+    },
+    term_length_weeks: { type: Number, min: 1, max: 30, default: 13 },
+    pass_mark: { type: Number, min: 0, max: 100, default: 50 },
+  },
 };
 
 const organizationSchema = new Schema(organizationSchemaFields, {
@@ -26,6 +35,6 @@ const organizationSchema = new Schema(organizationSchemaFields, {
 
 const OrganizationModel = model<IOrganizationDocument>(
   "organization",
-  organizationSchema
+  organizationSchema,
 );
 export default OrganizationModel;

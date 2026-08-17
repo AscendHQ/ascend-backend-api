@@ -34,6 +34,20 @@ export interface IStudent {
   academic_details: {
     class: string | IClass;
     previous_school?: string;
+    current_session?: string;
+    current_term?: string;
+    progression_history?: Array<{
+      from_session: string;
+      from_term: string;
+      from_class: string | IClass;
+      to_session: string;
+      to_term: string;
+      to_class?: string | IClass;
+      decision: "advanced" | "promoted" | "repeated" | "graduated";
+      result_average?: number;
+      processed_at: Date;
+      processed_by?: string;
+    }>;
   };
   accommodation?: {
     block: string;

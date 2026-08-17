@@ -17,6 +17,12 @@ export interface IOrganization {
   slug: string;
   last_staff_id: string;
   last_student_id: string;
+  academic_settings?: {
+    current_session: string;
+    current_term: string;
+    term_length_weeks: number;
+    pass_mark: number;
+  };
 }
 
 export interface IOrganizationDocument extends IOrganization, Document {}

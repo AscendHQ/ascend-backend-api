@@ -7,10 +7,18 @@ import {
   deleteStudentById,
   bulkAddStudent,
 } from "../controllers/student.controller";
+import {
+  getProgressionStudents,
+  progressStudents,
+} from "../controllers/student_progression.controller";
 import { checkPathPermission } from "../middlewares/checkPathPermission";
 import { csvUpload } from "../middlewares/csvUpload";
 
 const router = Router();
+
+router.get("/progression", auth, checkPathPermission, getProgressionStudents);
+
+router.post("/progression", auth, checkPathPermission, progressStudents);
 
 router.get("/", auth, checkPathPermission, getAllStudents);
 
