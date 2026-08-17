@@ -1,7 +1,12 @@
 import ClassModel from "../../models/class";
 import { ICustomInterface } from "../../interface";
+import SubjectRegistrationModel from "../../models/subject_registration";
 
-export const GetClassesWithStudents = async (query: ICustomInterface) => {
+export const GetClassesWithStudents = async (
+  query: ICustomInterface,
+  session: string,
+  term: string
+) => {
   const classes = await ClassModel.aggregate([
     {
       $match: query,
@@ -31,6 +36,31 @@ export const GetClassesWithStudents = async (query: ICustomInterface) => {
       },
     },
     {
+      $lookup: {
+        from: SubjectRegistrationModel.collection.name,
+        let: {
+          classId: "$_id",
+          organizationId: "$organization",
+        },
+        pipeline: [
+          {
+            $match: {
+              session,
+              term,
+              $expr: {
+                $and: [
+                  { $eq: ["$class", "$$classId"] },
+                  { $eq: ["$organization", "$$organizationId"] },
+                ],
+              },
+            },
+          },
+          { $project: { student: 1 } },
+        ],
+        as: "registrations",
+      },
+    },
+    {
       $project: {
         name: 1,
         students: {
@@ -43,6 +73,9 @@ export const GetClassesWithStudents = async (query: ICustomInterface) => {
               middle_name: "$$student.personal_information.middle_name",
               last_name: "$$student.personal_information.last_name",
               registration_number: "$$student.registration_number",
+              is_registered: {
+                $in: ["$$student._id", "$registrations.student"],
+              },
             },
           },
         },

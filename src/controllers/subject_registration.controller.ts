@@ -12,11 +12,13 @@ import StudentModel from "../models/student";
 
 const ensureActiveStudent = async (
   studentId: string,
-  organizationId: string
+  organizationId: string,
+  classId: string
 ) => {
   const student = await StudentModel.exists({
     _id: new ObjectId(studentId),
     organization: new ObjectId(organizationId),
+    "academic_details.class": new ObjectId(classId),
     is_active: true,
     is_deleted: false,
   });
@@ -29,12 +31,22 @@ const ensureActiveStudent = async (
 export const getClassesWithStudents = async (req: Request, res: Response) => {
   try {
     const { account } = req;
+    const { class_id, session, term } = req.query;
+
+    if (!class_id || !session || !term) {
+      return errorResponse(res, 400, "Class, session and term are required");
+    }
 
     const query: ICustomInterface = {
+      _id: new ObjectId(class_id as string),
       organization: new ObjectId(account.organization_id),
     };
 
-    const response = await GetClassesWithStudents(query);
+    const response = await GetClassesWithStudents(
+      query,
+      session as string,
+      term as string
+    );
 
     return successResponse(res, 200, response);
   } catch (error: any) {
@@ -48,7 +60,15 @@ export const getStudentRegistration = async (req: Request, res: Response) => {
     const { student_id } = req.params;
     const { class_id, session, term } = req.query;
 
-    await ensureActiveStudent(student_id, account.organization_id);
+    if (!class_id || !session || !term) {
+      return errorResponse(res, 400, "Class, session and term are required");
+    }
+
+    await ensureActiveStudent(
+      student_id,
+      account.organization_id,
+      class_id as string
+    );
 
     const query: ICustomInterface = {
       organization: new ObjectId(account.organization_id),
@@ -72,7 +92,21 @@ export const addExtraSubject = async (req: Request, res: Response) => {
     const { student, class_id, session, term, additional_subjects } =
       req.body;
 
-    await ensureActiveStudent(student, account.organization_id);
+    if (
+      !student ||
+      !class_id ||
+      !session ||
+      !term ||
+      !Array.isArray(additional_subjects)
+    ) {
+      return errorResponse(
+        res,
+        400,
+        "Student, class, session, term and additional subjects are required"
+      );
+    }
+
+    await ensureActiveStudent(student, account.organization_id, class_id);
 
     const response = await AddExtraSubject({
       organization: account.organization_id,

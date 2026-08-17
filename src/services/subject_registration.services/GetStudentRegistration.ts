@@ -11,9 +11,10 @@ export const GetStudentRegistration = async (query: ICustomInterface) => {
     .select("additional_subjects")
     .exec();
 
-  const subjects = await SubjectModel.find({ classes: query.class }).select(
-    "class name type"
-  );
+  const subjects = await SubjectModel.find({
+    organization: query.organization,
+    classes: query.class,
+  }).select("class name type");
 
   return { registration, subjects };
 };
