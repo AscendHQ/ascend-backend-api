@@ -24,6 +24,7 @@ const ROUTE_TO_MODULE: Record<string, string> = {
   // module yet, so it's gated by the Subjects permission for now.
   registrations: "subjects",
   attendance: "students",
+  fees: "payroll",
 };
 
 export const checkPathPermission = async (

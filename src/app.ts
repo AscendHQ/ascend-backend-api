@@ -63,6 +63,7 @@ import organizationRouter from "./routes/organization";
 import lessonRouter from "./routes/lesson";
 import resultRouter from "./routes/result";
 import attendanceRouter from "./routes/attendance";
+import feeRouter from "./routes/fee";
 
 // use routers
 app.use("/auth", authRouter);
@@ -79,6 +80,7 @@ app.use("/roles", permissionRouter);
 app.use("/lessons", lessonRouter);
 app.use("/results", resultRouter);
 app.use("/attendance", attendanceRouter);
+app.use("/fees", feeRouter);
 app.use("/organizations", organizationRouter);
 app.use("/bootstrap-admin", bootstrapRouter); // TEMPORARY - remove after use
 app.use("/accounts", accountRouter);

@@ -14,3 +14,4 @@ export * from "./result.interface";
 export * from "./subject_registration.interface";
 export * from "./payroll.interface";
 export * from "./attendance.interface";
+export * from "./fee.interface";
