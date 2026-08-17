@@ -6,7 +6,7 @@ const noticeSchema = new Schema(
     title: { type: String, required: true, trim: true, maxlength: 150 },
     message: { type: String, required: true, trim: true, maxlength: 3000 },
     type: { type: String, enum: ["announcement", "event"], required: true },
-    audience: { type: String, enum: ["all", "parents", "students"], default: "all" },
+    audience: { type: String, enum: ["all", "parents", "students", "teachers"], default: "all" },
     classes: { type: [{ type: Schema.Types.ObjectId, ref: "class" }], default: [] },
     starts_at: { type: Date, required: true },
     ends_at: { type: Date },

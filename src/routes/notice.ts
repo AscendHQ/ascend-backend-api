@@ -16,7 +16,11 @@ const router = Router();
 router.get(
   "/portal",
   auth,
-  requireAccountType(EAccountType.PARENT, EAccountType.STUDENT),
+  requireAccountType(
+    EAccountType.PARENT,
+    EAccountType.STUDENT,
+    EAccountType.TEACHER,
+  ),
   getPortalNotices,
 );
 router.get("/", auth, checkPathPermission, getNotices);

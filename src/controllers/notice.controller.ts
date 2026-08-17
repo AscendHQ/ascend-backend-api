@@ -5,11 +5,12 @@ import { EAccountType } from "../interface";
 import ClassModel from "../models/class";
 import NoticeModel from "../models/notice";
 import StudentModel from "../models/student";
+import TeacherProfileModel from "../models/teacher_profile";
 import { errorResponse, successResponse } from "../utils/responseHandler";
 import { getAccessibleStudentIds } from "../utils/portalAccess";
 
 const VALID_TYPES = ["announcement", "event"];
-const VALID_AUDIENCES = ["all", "parents", "students"];
+const VALID_AUDIENCES = ["all", "parents", "students", "teachers"];
 
 const normalizeNotice = (body: any) => {
   const startsAt = new Date(body.starts_at);
@@ -130,14 +131,27 @@ export const deleteNotice = async (req: Request, res: Response) => {
 export const getPortalNotices = async (req: Request, res: Response) => {
   try {
     const organization = new ObjectId(req.account.organization_id);
-    const studentIds = await getAccessibleStudentIds(req.account);
-    const classIds = await StudentModel.find({
-      _id: { $in: studentIds },
-      organization,
-      is_deleted: false,
-    }).distinct("academic_details.class");
-    const audience =
-      req.account.account_type === EAccountType.PARENT ? "parents" : "students";
+    let classIds: ObjectId[] = [];
+    let audience = "students";
+    if (req.account.account_type === EAccountType.TEACHER) {
+      const profile = await TeacherProfileModel.findOne({
+        account: new ObjectId(req.account.account_id),
+        organization,
+      });
+      classIds = (profile?.classes as ObjectId[]) ?? [];
+      audience = "teachers";
+    } else {
+      const studentIds = await getAccessibleStudentIds(req.account);
+      classIds = await StudentModel.find({
+        _id: { $in: studentIds },
+        organization,
+        is_deleted: false,
+      }).distinct("academic_details.class");
+      audience =
+        req.account.account_type === EAccountType.PARENT
+          ? "parents"
+          : "students";
+    }
     const notices = await NoticeModel.find({
       organization,
       is_published: true,
