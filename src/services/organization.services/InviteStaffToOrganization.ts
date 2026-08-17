@@ -2,7 +2,7 @@ import { hash } from "bcryptjs";
 import { ObjectId } from "mongodb";
 import AccountModel from "../../models/account";
 import PermissionModel from "../../models/permission";
-import { ESystemAccessLevel } from "../../interface";
+import { EAccountType, ESystemAccessLevel } from "../../interface";
 
 export const InviteStaffToOrganization = async (payload: {
   organization: string | ObjectId;
@@ -43,6 +43,7 @@ export const InviteStaffToOrganization = async (payload: {
     access_level: ESystemAccessLevel.NORMAL_USER,
     is_email_verified: true,
     is_verified: true,
+    account_type: EAccountType.STAFF,
   });
 
   account.password = "undefined";

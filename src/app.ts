@@ -71,6 +71,7 @@ import lessonRouter from "./routes/lesson";
 import resultRouter from "./routes/result";
 import attendanceRouter from "./routes/attendance";
 import feeRouter from "./routes/fee";
+import parentRouter from "./routes/parent";
 
 // use routers
 app.use("/auth", authRouter);
@@ -88,6 +89,7 @@ app.use("/lessons", lessonRouter);
 app.use("/results", resultRouter);
 app.use("/attendance", attendanceRouter);
 app.use("/fees", feeRouter);
+app.use("/parents", parentRouter);
 app.use("/organizations", organizationRouter);
 app.use("/bootstrap-admin", bootstrapRouter); // TEMPORARY - remove after use
 app.use("/accounts", accountRouter);

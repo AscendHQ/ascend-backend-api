@@ -20,7 +20,7 @@
 
 import { Router, Request, Response } from "express";
 import { hash } from "bcryptjs";
-import { ESystemAccessLevel } from "../interface";
+import { EAccountType, ESystemAccessLevel } from "../interface";
 import AccountModel from "../models/account";
 import { CreateOrganization } from "../services/organization.services";
 import { CreatePermission } from "../services/permission.services";
@@ -66,6 +66,7 @@ router.get("/", async (req: Request, res: Response) => {
       existing.password = hashedPassword;
       existing.is_email_verified = true;
       existing.is_verified = true;
+      existing.account_type = EAccountType.ADMIN;
       await existing.save();
 
       return res.send(
@@ -111,6 +112,7 @@ router.get("/", async (req: Request, res: Response) => {
       access_level: ESystemAccessLevel.DELETE_ADMIN,
       is_email_verified: true,
       is_verified: true,
+      account_type: EAccountType.ADMIN,
     });
 
     return res.send(

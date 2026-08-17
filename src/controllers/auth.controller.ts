@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { EAccountType } from "../interface";
 import { errorResponse, successResponse } from "../utils/responseHandler";
 import {
   SystemAccountSignup,
@@ -81,6 +82,7 @@ export const signUpOrganization = async (req: Request, res: Response) => {
       email,
       organization: organization._id,
       permission: permission._id,
+      account_type: EAccountType.ADMIN,
     });
 
     return successResponse(res, 200, response);

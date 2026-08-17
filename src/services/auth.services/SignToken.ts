@@ -17,7 +17,7 @@ export const SignToken = async (payload: IAccountAuthInfoRequest) => {
     { new: true }
   )
     .select(
-      "first_name last_name email access_level organization is_email_verified is_verified"
+      "first_name last_name email access_level account_type organization is_email_verified is_verified"
     )
     .lean()
     .exec();

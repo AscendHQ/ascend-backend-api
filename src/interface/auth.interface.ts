@@ -1,9 +1,12 @@
+import { EAccountType } from "./account.interface";
+
 export interface IAccountAuthInfoRequest {
   account_id: string;
   organization_id: string;
   access_level: ESystemAccessLevel;
   is_email_verified: boolean;
   permission: string;
+  account_type?: EAccountType;
 }
 
 export enum ESystemAccessLevel {

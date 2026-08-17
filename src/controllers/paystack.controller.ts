@@ -42,6 +42,11 @@ const createPaymentToken = (invoiceId: string) => {
   return `${encodedPayload}.${signPayload(encodedPayload)}`;
 };
 
+export const createInvoicePaymentUrl = (invoiceId: string) => {
+  const token = createPaymentToken(invoiceId);
+  return `${config.FRONTEND_APP_URL.replace(/\/$/, "")}/pay/${token}`;
+};
+
 const parsePaymentToken = (token: string): PaymentLinkPayload | null => {
   try {
     const [encodedPayload, providedSignature] = token.split(".");
@@ -229,8 +234,7 @@ export const createInvoicePaymentLink = async (req: Request, res: Response) => {
       organization: new ObjectId(account.organization_id),
     });
     if (!invoice) return errorResponse(res, 404, "Invoice not found");
-    const token = createPaymentToken(invoice_id);
-    const paymentUrl = `${config.FRONTEND_APP_URL.replace(/\/$/, "")}/pay/${token}`;
+    const paymentUrl = createInvoicePaymentUrl(invoice_id);
     return successResponse(res, 200, {
       payment_url: paymentUrl,
       expires_at: new Date(Date.now() + PAYMENT_LINK_LIFETIME_SECONDS * 1000),

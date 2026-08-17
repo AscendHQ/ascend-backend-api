@@ -1,5 +1,10 @@
 import { model, Schema } from "mongoose";
-import { ESystemAccessLevel, IAccount, IAccountDocument } from "../interface";
+import {
+  EAccountType,
+  ESystemAccessLevel,
+  IAccount,
+  IAccountDocument,
+} from "../interface";
 
 const accountSchemaFields: Record<keyof IAccount, any> = {
   first_name: { type: String },
@@ -22,6 +27,7 @@ const accountSchemaFields: Record<keyof IAccount, any> = {
   verification_token: { type: String },
   token_validity: { type: Date },
   last_login: { type: Date },
+  account_type: { type: String, enum: Object.values(EAccountType) },
 };
 
 const accountSchema = new Schema(accountSchemaFields, {

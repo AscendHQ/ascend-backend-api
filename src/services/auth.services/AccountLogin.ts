@@ -1,5 +1,7 @@
 import { compare } from "bcryptjs";
 import AccountModel from "../../models/account";
+import PermissionModel from "../../models/permission";
+import { EAccountType } from "../../interface";
 import { SignToken } from "./SignToken";
 
 export const AccountLogin = async (email: string, password: string) => {
@@ -13,12 +15,24 @@ export const AccountLogin = async (email: string, password: string) => {
     throw new Error("Invalid Credentials");
   }
 
+  let accountType = account.account_type;
+  if (!accountType) {
+    const permission = await PermissionModel.findById(account.permission).select(
+      "name",
+    );
+    accountType =
+      permission?.name.toLowerCase() === "admin"
+        ? EAccountType.ADMIN
+        : EAccountType.STAFF;
+  }
+
   const { access_token } = await SignToken({
     account_id: account._id,
     access_level: account.access_level,
     organization_id: account.organization as string,
     is_email_verified: account.is_email_verified,
     permission: account.permission as string,
+    account_type: accountType,
   });
 
   return {
@@ -31,6 +45,7 @@ export const AccountLogin = async (email: string, password: string) => {
       organization: account.organization,
       access_level: account.access_level,
       is_email_verified: account.is_email_verified,
+      account_type: accountType,
     },
   };
 };
