@@ -47,7 +47,7 @@ const getParentPermission = async (organization: ObjectId) => {
   });
 };
 
-const getAttendanceSummary = async (
+export const getAttendanceSummary = async (
   organization: ObjectId,
   studentId: ObjectId,
 ) => {
@@ -94,7 +94,7 @@ const getAttendanceSummary = async (
   return { total_days: history.length, percentage, counts, history };
 };
 
-const serializeInvoice = (invoice: any) => {
+export const serializePortalInvoice = (invoice: any) => {
   const value = invoice.toObject();
   const balance = Math.max(0, value.total_amount - value.amount_paid);
   const today = new Date();
@@ -125,7 +125,7 @@ const getFinancialSummary = async (
   );
 };
 
-const getLatestResult = async (
+export const getLatestResult = async (
   organization: ObjectId,
   studentId: ObjectId,
 ) => {
@@ -339,7 +339,7 @@ export const getParentChildDetails = async (req: Request, res: Response) => {
         .sort({ createdAt: -1 }),
     ]);
     const invoices = invoiceDocuments.map((invoice) => {
-      const serialized = serializeInvoice(invoice);
+      const serialized = serializePortalInvoice(invoice);
       return {
         ...serialized,
         payment_url:

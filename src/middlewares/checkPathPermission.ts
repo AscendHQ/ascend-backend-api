@@ -25,6 +25,8 @@ const ROUTE_TO_MODULE: Record<string, string> = {
   registrations: "subjects",
   attendance: "students",
   fees: "payroll",
+  communications: "dashboard",
+  timetables: "time_table",
 };
 
 export const checkPathPermission = async (

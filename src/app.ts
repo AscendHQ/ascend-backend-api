@@ -72,6 +72,9 @@ import resultRouter from "./routes/result";
 import attendanceRouter from "./routes/attendance";
 import feeRouter from "./routes/fee";
 import parentRouter from "./routes/parent";
+import noticeRouter from "./routes/notice";
+import timetableRouter from "./routes/timetable";
+import studentPortalRouter from "./routes/student_portal";
 
 // use routers
 app.use("/auth", authRouter);
@@ -90,6 +93,9 @@ app.use("/results", resultRouter);
 app.use("/attendance", attendanceRouter);
 app.use("/fees", feeRouter);
 app.use("/parents", parentRouter);
+app.use("/communications", noticeRouter);
+app.use("/timetables", timetableRouter);
+app.use("/student-portals", studentPortalRouter);
 app.use("/organizations", organizationRouter);
 app.use("/bootstrap-admin", bootstrapRouter); // TEMPORARY - remove after use
 app.use("/accounts", accountRouter);
