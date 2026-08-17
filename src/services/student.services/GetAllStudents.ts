@@ -10,6 +10,14 @@ export const GetAllStudents = async (
     .limit(limit)
     .skip((page - 1) * limit)
     .populate({ path: "academic_details.class", select: "name" })
+    .populate({
+      path: "academic_details.progression_history.from_class",
+      select: "name level section other_section",
+    })
+    .populate({
+      path: "academic_details.progression_history.to_class",
+      select: "name level section other_section",
+    })
     .exec();
 
   const total_documents = await StudentModel.countDocuments(query);

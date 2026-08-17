@@ -27,6 +27,14 @@ const organizationSchemaFields: Record<keyof IOrganization, any> = {
     term_length_weeks: { type: Number, min: 1, max: 30, default: 13 },
     pass_mark: { type: Number, min: 0, max: 100, default: 50 },
   },
+  academic_period_history: [
+    {
+      session: { type: String, required: true },
+      term: { type: String, required: true },
+      closed_at: { type: Date, default: Date.now },
+      closed_by: { type: Schema.Types.ObjectId, ref: "account" },
+    },
+  ],
 };
 
 const organizationSchema = new Schema(organizationSchemaFields, {

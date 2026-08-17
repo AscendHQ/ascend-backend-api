@@ -4,6 +4,7 @@ import { ObjectId } from "mongodb";
 import ClassModel from "../models/class";
 import ResultModel from "../models/result";
 import StudentModel from "../models/student";
+import SubjectRegistrationModel from "../models/subject_registration";
 import { errorResponse, successResponse } from "../utils/responseHandler";
 
 type ProgressionDecision = "advanced" | "promoted" | "repeated" | "graduated";
@@ -291,12 +292,42 @@ export const progressStudents = async (req: Request, res: Response) => {
       }
     }
 
-    const results = await ResultModel.find({
-      organization,
-      student: { $in: students.map((student) => student._id) },
-      session: from_session,
-      term: { $in: TERM_VARIANTS[from_term] ?? [from_term] },
-    }).select("student blocks");
+    const selectedStudentIds = students.map((student) => student._id);
+    const [results, registeredStudentIds] = await Promise.all([
+      ResultModel.find({
+        organization,
+        student: { $in: selectedStudentIds },
+        session: from_session,
+        term: { $in: TERM_VARIANTS[from_term] ?? [from_term] },
+      }).select("student blocks"),
+      SubjectRegistrationModel.distinct("student", {
+        organization,
+        student: { $in: selectedStudentIds },
+        class: fromClass,
+        session: from_session,
+        term: from_term,
+      }),
+    ]);
+
+    const studentsWithResults = new Set(
+      results.map((result) => String(result.student)),
+    );
+    const registeredStudents = new Set(
+      registeredStudentIds.map((studentId) => String(studentId)),
+    );
+    const hasIncompleteRecords = selectedStudentIds.some(
+      (studentId) =>
+        !studentsWithResults.has(String(studentId)) ||
+        !registeredStudents.has(String(studentId)),
+    );
+    if (hasIncompleteRecords) {
+      return errorResponse(
+        res,
+        409,
+        "Complete subject registration and results before progressing every selected student",
+      );
+    }
+
     const averages = new Map(
       results.map((result) => [
         String(result.student),
