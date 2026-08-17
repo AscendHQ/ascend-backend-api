@@ -138,7 +138,12 @@ export const getPortalNotices = async (req: Request, res: Response) => {
         account: new ObjectId(req.account.account_id),
         organization,
       });
-      classIds = (profile?.classes as ObjectId[]) ?? [];
+      const assignments = profile?.assignments as unknown as Array<{
+        class: ObjectId;
+      }>;
+      classIds = assignments?.length
+        ? assignments.map((assignment) => assignment.class)
+        : ((profile?.classes as ObjectId[]) ?? []);
       audience = "teachers";
     } else {
       const studentIds = await getAccessibleStudentIds(req.account);

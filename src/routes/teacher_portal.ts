@@ -5,6 +5,7 @@ import {
   createTeacherPortalAccount,
   getTeacherPortalAccounts,
   getTeacherPortalDashboard,
+  updateTeacherPortalAssignments,
 } from "../controllers/teacher_portal.controller";
 import { EAccountType } from "../interface";
 import { hasAdministrationAccess } from "../middlewares/hasAdministrationAccess";
@@ -19,4 +20,10 @@ router.get(
 );
 router.get("/", auth, hasAdministrationAccess, getTeacherPortalAccounts);
 router.post("/", auth, hasAdministrationAccess, createTeacherPortalAccount);
+router.put(
+  "/:profile_id/assignments",
+  auth,
+  hasAdministrationAccess,
+  updateTeacherPortalAssignments,
+);
 export default router;
