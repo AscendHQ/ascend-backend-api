@@ -3,17 +3,20 @@ import { ISubjectRegistration } from "../../interface";
 import SubjectModel from "../../models/subject";
 
 export const AddExtraSubject = async (payload: ISubjectRegistration) => {
-  const additionalSubjects = [
-    ...new Set(payload.additional_subjects.map(subject => String(subject))),
+  const selectedSubjects = [
+    ...new Set(
+      (payload.selected_subjects ?? payload.additional_subjects ?? []).map(
+        subject => String(subject)
+      )
+    ),
   ];
   const validSubjectCount = await SubjectModel.countDocuments({
-    _id: { $in: additionalSubjects },
+    _id: { $in: selectedSubjects },
     organization: payload.organization,
     classes: payload.class,
-    type: "elective",
   });
 
-  if (validSubjectCount !== additionalSubjects.length) {
+  if (validSubjectCount !== selectedSubjects.length) {
     throw new Error("One or more selected subjects are invalid for this class");
   }
 
@@ -25,7 +28,10 @@ export const AddExtraSubject = async (payload: ISubjectRegistration) => {
       session: payload.session,
       term: payload.term,
     },
-    { ...payload, additional_subjects: additionalSubjects },
+    {
+      $set: { ...payload, selected_subjects: selectedSubjects },
+      $unset: { additional_subjects: "" },
+    },
     {
       new: true,
       upsert: true,

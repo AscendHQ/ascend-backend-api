@@ -25,6 +25,10 @@ const subjectRegistrationSchemaFields: Record<keyof ISubjectRegistration, any> =
         ref: "subject",
       },
     ],
+    selected_subjects: {
+      type: [{ type: Schema.Types.ObjectId, ref: "subject" }],
+      default: undefined,
+    },
   };
 
 const subjectRegistrationSchema = new Schema(subjectRegistrationSchemaFields, {

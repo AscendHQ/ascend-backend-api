@@ -10,7 +10,8 @@ export interface ISubjectRegistration {
   class: string | IClass;
   session: string;
   term: string;
-  additional_subjects: Array<string | ISubject>;
+  additional_subjects?: Array<string | ISubject>;
+  selected_subjects?: Array<string | ISubject>;
 }
 
 export interface ISubjectRegistrationDocument

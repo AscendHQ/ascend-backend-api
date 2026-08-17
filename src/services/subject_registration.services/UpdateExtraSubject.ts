@@ -4,7 +4,7 @@ import StudentModel from "../../models/student";
 
 export const UpdateExtraSubject = async (
   registration_id: string,
-  update: Pick<ISubjectRegistration, "organization" | "additional_subjects">
+  update: Pick<ISubjectRegistration, "organization" | "selected_subjects">
 ) => {
   const registrationQuery = {
     _id: registration_id,
@@ -31,7 +31,10 @@ export const UpdateExtraSubject = async (
 
   const registration = await SubjectRegistrationModel.findOneAndUpdate(
     registrationQuery,
-    { $set: { additional_subjects: update.additional_subjects } },
+    {
+      $set: { selected_subjects: update.selected_subjects },
+      $unset: { additional_subjects: "" },
+    },
     { new: true }
   );
 

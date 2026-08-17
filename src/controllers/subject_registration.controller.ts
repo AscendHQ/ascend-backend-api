@@ -89,20 +89,27 @@ export const getStudentRegistration = async (req: Request, res: Response) => {
 export const addExtraSubject = async (req: Request, res: Response) => {
   try {
     const { account } = req;
-    const { student, class_id, session, term, additional_subjects } =
-      req.body;
+    const {
+      student,
+      class_id,
+      session,
+      term,
+      selected_subjects,
+      additional_subjects,
+    } = req.body;
+    const subjects = selected_subjects ?? additional_subjects;
 
     if (
       !student ||
       !class_id ||
       !session ||
       !term ||
-      !Array.isArray(additional_subjects)
+      !Array.isArray(subjects)
     ) {
       return errorResponse(
         res,
         400,
-        "Student, class, session, term and additional subjects are required"
+        "Student, class, session, term and selected subjects are required"
       );
     }
 
@@ -114,7 +121,7 @@ export const addExtraSubject = async (req: Request, res: Response) => {
       class: class_id,
       session,
       term,
-      additional_subjects,
+      selected_subjects: subjects,
     });
 
     return successResponse(res, 201, response);
@@ -127,11 +134,16 @@ export const updateExtraSubject = async (req: Request, res: Response) => {
   try {
     const { account } = req;
     const { registration_id } = req.params;
-    const { additional_subjects } = req.body;
+    const { selected_subjects, additional_subjects } = req.body;
+    const subjects = selected_subjects ?? additional_subjects;
+
+    if (!Array.isArray(subjects)) {
+      return errorResponse(res, 400, "Selected subjects are required");
+    }
 
     const response = await UpdateExtraSubject(registration_id, {
       organization: account.organization_id,
-      additional_subjects,
+      selected_subjects: subjects,
     });
 
     return successResponse(res, 200, response);
