@@ -7,8 +7,6 @@ import {
 } from "../controllers/attendance.controller";
 import {
   getTeacherResultRegister,
-  getTeacherResultSubmissions,
-  reviewTeacherResultSubmission,
   saveTeacherResultRegister,
 } from "../controllers/teacher_result.controller";
 import {
@@ -51,18 +49,6 @@ router.post(
   auth,
   requireAccountType(EAccountType.TEACHER),
   saveTeacherResultRegister,
-);
-router.get(
-  "/result-submissions",
-  auth,
-  hasAdministrationAccess,
-  getTeacherResultSubmissions,
-);
-router.put(
-  "/result-submissions/:submission_id/review",
-  auth,
-  hasAdministrationAccess,
-  reviewTeacherResultSubmission,
 );
 router.get("/", auth, hasAdministrationAccess, getTeacherPortalAccounts);
 router.post("/", auth, hasAdministrationAccess, createTeacherPortalAccount);

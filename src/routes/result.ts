@@ -11,12 +11,30 @@ import {
   updateResultById,
   updateResultInResultBlock,
 } from "../controllers/result.controller";
+import {
+  getTeacherResultSubmissions,
+  reviewTeacherResultSubmission,
+} from "../controllers/teacher_result.controller";
 
 const router = Router();
 
 router.get("/", auth, checkPathPermission, getAllResults);
 
 router.post("/", auth, checkPathPermission, addResult);
+
+router.get(
+  "/teacher-submissions",
+  auth,
+  checkPathPermission,
+  getTeacherResultSubmissions,
+);
+
+router.put(
+  "/teacher-submissions/:submission_id/review",
+  auth,
+  checkPathPermission,
+  reviewTeacherResultSubmission,
+);
 
 router.get("/:result_id", auth, checkPathPermission, getResultById);
 
