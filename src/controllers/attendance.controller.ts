@@ -1,10 +1,11 @@
 import { ObjectId } from "mongodb";
 import { Request, Response } from "express";
 
-import { EAttendanceStatus } from "../interface";
+import { EAccountType, EAttendanceStatus } from "../interface";
 import AttendanceModel from "../models/attendance";
 import ClassModel from "../models/class";
 import StudentModel from "../models/student";
+import TeacherProfileModel from "../models/teacher_profile";
 import { errorResponse, successResponse } from "../utils/responseHandler";
 
 const VALID_TERMS = ["1st Term", "2nd Term", "3rd Term"];
@@ -31,12 +32,29 @@ const isValidRegisterKey = ({
   /^\d{4}-\d{2}-\d{2}$/.test(date) &&
   !Number.isNaN(Date.parse(`${date}T00:00:00Z`));
 
-const ensureClass = async (classId: string, organization: ObjectId) =>
-  ClassModel.findOne({
+const ensureClassAccess = async (
+  classId: string,
+  organization: ObjectId,
+  account: Request["account"],
+) => {
+  const classRecord = await ClassModel.findOne({
     _id: new ObjectId(classId),
     organization,
     is_active: true,
   }).select("name level section other_section");
+  if (!classRecord || account.account_type !== EAccountType.TEACHER) {
+    return classRecord;
+  }
+  const hasAssignment = await TeacherProfileModel.exists({
+    account: new ObjectId(account.account_id),
+    organization,
+    $or: [
+      { "assignments.class": classRecord._id },
+      { classes: classRecord._id },
+    ],
+  });
+  return hasAssignment ? classRecord : null;
+};
 
 const getRosterQuery = (
   organization: ObjectId,
@@ -91,8 +109,14 @@ export const getAttendanceRegister = async (req: Request, res: Response) => {
     }
 
     const organization = new ObjectId(account.organization_id);
-    const classRecord = await ensureClass(class_id as string, organization);
-    if (!classRecord) return errorResponse(res, 404, "Class not found");
+    const classRecord = await ensureClassAccess(
+      class_id as string,
+      organization,
+      account,
+    );
+    if (!classRecord) {
+      return errorResponse(res, 403, "Class not found or not assigned to you");
+    }
 
     const classObjectId = new ObjectId(class_id as string);
     const students = await StudentModel.find(
@@ -162,8 +186,14 @@ export const saveAttendanceRegister = async (req: Request, res: Response) => {
     }
 
     const organization = new ObjectId(account.organization_id);
-    const classRecord = await ensureClass(class_id, organization);
-    if (!classRecord) return errorResponse(res, 404, "Class not found");
+    const classRecord = await ensureClassAccess(
+      class_id,
+      organization,
+      account,
+    );
+    if (!classRecord) {
+      return errorResponse(res, 403, "Class not found or not assigned to you");
+    }
 
     const classObjectId = new ObjectId(class_id);
     const students = await StudentModel.find(

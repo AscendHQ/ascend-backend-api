@@ -2,6 +2,10 @@ import { Router } from "express";
 
 import { auth } from "../auth/auth";
 import {
+  getAttendanceRegister,
+  saveAttendanceRegister,
+} from "../controllers/attendance.controller";
+import {
   createTeacherPortalAccount,
   getTeacherPortalAccounts,
   getTeacherPortalDashboard,
@@ -17,6 +21,18 @@ router.get(
   auth,
   requireAccountType(EAccountType.TEACHER),
   getTeacherPortalDashboard,
+);
+router.get(
+  "/me/attendance",
+  auth,
+  requireAccountType(EAccountType.TEACHER),
+  getAttendanceRegister,
+);
+router.post(
+  "/me/attendance",
+  auth,
+  requireAccountType(EAccountType.TEACHER),
+  saveAttendanceRegister,
 );
 router.get("/", auth, hasAdministrationAccess, getTeacherPortalAccounts);
 router.post("/", auth, hasAdministrationAccess, createTeacherPortalAccount);
