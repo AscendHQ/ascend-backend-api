@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 
-import { config } from "../config/env";
 import { EAccountType } from "../interface";
 import AccountModel from "../models/account";
 import AttendanceModel from "../models/attendance";
@@ -83,9 +82,9 @@ const getAttentionReasons = ({
   return reasons;
 };
 
-export const getPlatformMetrics = async (_req: Request, res: Response) => {
+export const getPlatformMetrics = async (req: Request, res: Response) => {
   try {
-    const ascendOrganization = new ObjectId(config.ASCEND_ORG_ID);
+    const ascendOrganization = new ObjectId(req.account.organization_id);
     const schools = await OrganizationModel.find({
       _id: { $ne: ascendOrganization },
     })
