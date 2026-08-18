@@ -85,6 +85,9 @@ const getRegisteredStudents = async ({
     registrations.map((registration) => [String(registration.student), registration]),
   );
   return students.filter((student) => {
+    // Core subjects apply to every active student in the class. Subject
+    // registration is only needed to decide who takes an elective.
+    if (subject.type === "core") return true;
     const registration = registrationByStudent.get(String(student._id));
     if (!registration) return false;
     if (registration.selected_subjects) {
@@ -92,11 +95,8 @@ const getRegisteredStudents = async ({
         (item) => String(item) === String(subjectId),
       );
     }
-    return (
-      subject.type === "core" ||
-      (registration.additional_subjects ?? []).some(
-        (item) => String(item) === String(subjectId),
-      )
+    return (registration.additional_subjects ?? []).some(
+      (item) => String(item) === String(subjectId),
     );
   });
 };
