@@ -1,4 +1,4 @@
-import { sign } from "jsonwebtoken";
+import { sign, SignOptions } from "jsonwebtoken";
 import { IAccountAuthInfoRequest } from "../../interface";
 import { config } from "../../config/env";
 import AccountModel from "../../models/account";
@@ -6,7 +6,7 @@ const { JWT_SECRET, TOKEN_EXPIRES_TIME } = config;
 
 export const SignToken = async (payload: IAccountAuthInfoRequest) => {
   const access_token = sign(payload, JWT_SECRET as string, {
-    expiresIn: TOKEN_EXPIRES_TIME,
+    expiresIn: TOKEN_EXPIRES_TIME as SignOptions["expiresIn"],
   });
 
   const account = await AccountModel.findByIdAndUpdate(
