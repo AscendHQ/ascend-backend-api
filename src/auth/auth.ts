@@ -12,13 +12,13 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
   if (token) {
     verify(token, JWT_SECRET, (err: any, decoded: any) => {
       if (err) {
-        return errorResponse(res, 403, "invalid token");
+        return errorResponse(res, 401, "invalid token");
       }
       req.account = decoded as IAccountAuthInfoRequest;
       return next();
     });
   } else {
-    return errorResponse(res, 403, "request not authenticated");
+    return errorResponse(res, 401, "request not authenticated");
   }
 };
 
@@ -30,7 +30,7 @@ export const isEmailVerified = (
   const { account } = req;
 
   if (!account.is_email_verified) {
-    return errorResponse(res, 401, "Email not verified");
+    return errorResponse(res, 403, "Email not verified");
   }
 
   return next();
@@ -44,7 +44,7 @@ export const isAscendAdmin = (
   const { account } = req;
 
   if (account.access_level < ESystemAccessLevel.READ_ADMIN)
-    return errorResponse(res, 401, "Unauthorized");
+    return errorResponse(res, 403, "Unauthorized");
 
   return next();
 };

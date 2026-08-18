@@ -40,7 +40,7 @@ export const checkPathPermission = async (
   );
 
   if (!permission) {
-    return errorResponse(res, 401, "Unauthorized");
+    return errorResponse(res, 403, "Unauthorized");
   }
 
   const map_method_to_action: { [key: string]: string } = {
@@ -58,12 +58,12 @@ export const checkPathPermission = async (
   const moduleKey = ROUTE_TO_MODULE[resource];
 
   if (!moduleKey || !permission[moduleKey]) {
-    return errorResponse(res, 401, "Unauthorized");
+    return errorResponse(res, 403, "Unauthorized");
   }
 
   if (permission[moduleKey][method_action]) {
     return next();
   }
 
-  return errorResponse(res, 401, "Unauthorized");
+  return errorResponse(res, 403, "Unauthorized");
 };
