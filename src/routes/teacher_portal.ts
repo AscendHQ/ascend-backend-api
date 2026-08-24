@@ -5,6 +5,7 @@ import {
   getAttendanceRegister,
   saveAttendanceRegister,
 } from "../controllers/attendance.controller";
+import { uploadTeacherBulkResults } from "../controllers/bulk_result.controller";
 import {
   getTeacherResultRegister,
   saveTeacherResultRegister,
@@ -16,6 +17,7 @@ import {
   updateTeacherPortalAssignments,
 } from "../controllers/teacher_portal.controller";
 import { EAccountType } from "../interface";
+import { csvUpload } from "../middlewares/csvUpload";
 import { hasAdministrationAccess } from "../middlewares/hasAdministrationAccess";
 import { requireAccountType } from "../middlewares/requireAccountType";
 
@@ -49,6 +51,13 @@ router.post(
   auth,
   requireAccountType(EAccountType.TEACHER),
   saveTeacherResultRegister,
+);
+router.post(
+  "/me/results/bulk",
+  auth,
+  requireAccountType(EAccountType.TEACHER),
+  csvUpload,
+  uploadTeacherBulkResults,
 );
 router.get("/", auth, hasAdministrationAccess, getTeacherPortalAccounts);
 router.post("/", auth, hasAdministrationAccess, createTeacherPortalAccount);

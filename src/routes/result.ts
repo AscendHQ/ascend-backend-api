@@ -1,6 +1,11 @@
 import { Router } from "express";
 import { auth } from "../auth/auth";
+import {
+  getAdminBulkResultRoster,
+  uploadAdminBulkResults,
+} from "../controllers/bulk_result.controller";
 import { checkPathPermission } from "../middlewares/checkPathPermission";
+import { csvUpload } from "../middlewares/csvUpload";
 import {
   addResult,
   addResultToResultBlock,
@@ -17,6 +22,9 @@ import {
 } from "../controllers/teacher_result.controller";
 
 const router = Router();
+
+router.get("/bulk/roster", auth, checkPathPermission, getAdminBulkResultRoster);
+router.post("/bulk", auth, checkPathPermission, csvUpload, uploadAdminBulkResults);
 
 router.get("/", auth, checkPathPermission, getAllResults);
 

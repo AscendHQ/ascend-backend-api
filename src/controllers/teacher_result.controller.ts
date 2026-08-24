@@ -46,7 +46,7 @@ const getAssignment = async (
     ],
   });
 
-const getRegisteredStudents = async ({
+export const getRegisteredStudents = async ({
   organization,
   classId,
   subjectId,
