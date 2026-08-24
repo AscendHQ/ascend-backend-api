@@ -7,7 +7,7 @@ export const GetNextStaffNumber = async (
   organization: string,
   staff_no?: string
 ): Promise<string> => {
-  const { last_staff_id } = (await GetOrganizationById(
+  const { last_staff_id, name } = (await GetOrganizationById(
     organization
   )) as IOrganizationDocument;
 
@@ -26,8 +26,8 @@ export const GetNextStaffNumber = async (
     const currentYear = new Date().getFullYear();
     const lastYearDigits = currentYear % 100;
 
-    const first_letters = last_staff_id.match(/^[A-Za-z]+/);
-    const last_staff_numerical_parts = last_staff_id.match(/(\d+)$/);
+    const first_letters = last_staff_id?.match(/^[A-Za-z]+/);
+    const last_staff_numerical_parts = last_staff_id?.match(/(\d+)$/);
 
     let new_staff_no;
     let new_random_letter;
@@ -37,7 +37,9 @@ export const GetNextStaffNumber = async (
       const new_staff_num = parseInt(last_staff_num) + 1;
       new_staff_no = new_staff_num.toString().padStart(4, "0");
     } else {
-      new_random_letter = genRandomCode(1, "alphabet");
+      new_random_letter = name
+        ? name.replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase()
+        : genRandomCode(3, "alphabet");
       new_staff_no = "0001";
     }
 
