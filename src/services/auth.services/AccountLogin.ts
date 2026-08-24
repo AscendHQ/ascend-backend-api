@@ -1,5 +1,6 @@
 import { compare } from "bcryptjs";
 import AccountModel from "../../models/account";
+import OrganizationModel from "../../models/organization";
 import PermissionModel from "../../models/permission";
 import StudentModel from "../../models/student";
 import StudentProfileModel from "../../models/student_profile";
@@ -54,6 +55,13 @@ export const AccountLogin = async (identifier: string, password: string) => {
     throw new Error("Invalid Credentials");
   }
 
+  const organization = await OrganizationModel.findById(
+    account.organization,
+  ).select("is_active");
+  if (organization?.is_active === false) {
+    throw new Error("SCHOOL_SUSPENDED");
+  }
+
   let accountType = account.account_type;
   if (!accountType) {
     const permission = await PermissionModel.findById(account.permission).select(
@@ -72,6 +80,7 @@ export const AccountLogin = async (identifier: string, password: string) => {
     is_email_verified: account.is_email_verified,
     permission: account.permission as string,
     account_type: accountType,
+    session_version: account.session_version ?? 0,
   });
 
   return {

@@ -7,6 +7,7 @@ export interface IAccountAuthInfoRequest {
   is_email_verified: boolean;
   permission: string;
   account_type?: EAccountType;
+  session_version?: number;
 }
 
 export enum ESystemAccessLevel {

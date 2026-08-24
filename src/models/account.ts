@@ -28,6 +28,7 @@ const accountSchemaFields: Record<keyof IAccount, any> = {
   verification_token: { type: String },
   token_validity: { type: Date },
   last_login: { type: Date },
+  session_version: { type: Number, default: 0 },
   account_type: { type: String, enum: Object.values(EAccountType) },
 };
 

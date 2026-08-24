@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
+import { hash } from "bcryptjs";
+import { ObjectId } from "mongodb";
 import { errorResponse, successResponse } from "../utils/responseHandler";
-import { ICustomInterface } from "../interface";
+import { EAccountType, ICustomInterface } from "../interface";
+import AccountModel from "../models/account";
+import OrganizationModel from "../models/organization";
 import {
   DeleteOrganization,
   GetAllOrganization,
@@ -86,6 +90,93 @@ export const deleteOrg = async (req: Request, res: Response) => {
 
     const response = await DeleteOrganization(org_id);
     return successResponse(res, 200, response);
+  } catch (error: any) {
+    return errorResponse(res, 500, error.message);
+  }
+};
+
+export const updateOrganizationStatus = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const { org_id } = req.params;
+    const { is_active, reason } = req.body;
+    if (!ObjectId.isValid(org_id) || typeof is_active !== "boolean") {
+      return errorResponse(res, 400, "A valid school status is required");
+    }
+    if (org_id === req.account.organization_id) {
+      return errorResponse(res, 400, "The Ascend owner account cannot be suspended");
+    }
+    if (
+      !is_active &&
+      (typeof reason !== "string" || !reason.trim() || reason.trim().length > 500)
+    ) {
+      return errorResponse(
+        res,
+        400,
+        "Provide a suspension reason of no more than 500 characters",
+      );
+    }
+
+    const school = await OrganizationModel.findById(org_id);
+    if (!school) return errorResponse(res, 404, "School not found");
+
+    school.is_active = is_active;
+    school.suspended_at = is_active ? undefined : new Date();
+    school.suspended_by = is_active ? undefined : req.account.account_id;
+    school.suspension_reason = is_active ? undefined : reason.trim();
+    await school.save();
+
+    return successResponse(res, 200, {
+      id: school._id,
+      is_active: school.is_active,
+      suspended_at: school.suspended_at,
+      suspension_reason: school.suspension_reason,
+    });
+  } catch (error: any) {
+    return errorResponse(res, 500, error.message);
+  }
+};
+
+export const resetOrganizationAdminPassword = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const { org_id } = req.params;
+    const { password } = req.body;
+    const passwordPattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/;
+    if (!ObjectId.isValid(org_id) || !passwordPattern.test(password ?? "")) {
+      return errorResponse(
+        res,
+        400,
+        "Password must be at least 8 characters and include uppercase, lowercase, number, and symbol",
+      );
+    }
+    if (org_id === req.account.organization_id) {
+      return errorResponse(
+        res,
+        400,
+        "Change the owner password from Account Settings",
+      );
+    }
+
+    const admin = await AccountModel.findOne({
+      organization: new ObjectId(org_id),
+      account_type: EAccountType.ADMIN,
+    }).sort({ createdAt: 1 });
+    if (!admin) return errorResponse(res, 404, "School administrator not found");
+
+    admin.password = await hash(password, 10);
+    admin.session_version = (admin.session_version ?? 0) + 1;
+    await admin.save();
+
+    return successResponse(res, 200, {
+      email: admin.email,
+      message: "Administrator password reset and previous sessions ended",
+    });
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }

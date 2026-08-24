@@ -24,6 +24,7 @@ export interface IAccount {
   verification_token: string;
   token_validity: Date;
   last_login: Date;
+  session_version?: number;
   account_type?: EAccountType;
 }
 

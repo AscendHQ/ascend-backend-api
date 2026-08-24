@@ -37,6 +37,16 @@ export const systemAccountSignUp = async (req: Request, res: Response) => {
 
     return successResponse(res, 201, response);
   } catch (error: any) {
+    if (error.message === "SCHOOL_SUSPENDED") {
+      return errorResponse(
+        res,
+        403,
+        "This school account is suspended. Contact Ascend support.",
+      );
+    }
+    if (error.message === "Invalid Credentials") {
+      return errorResponse(res, 401, error.message);
+    }
     return errorResponse(res, 500, error.message);
   }
 };

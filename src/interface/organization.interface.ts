@@ -14,6 +14,10 @@ export interface IOrganization {
     country: string;
   };
   is_verified: boolean;
+  is_active?: boolean;
+  suspended_at?: Date;
+  suspended_by?: string;
+  suspension_reason?: string;
   slug: string;
   last_staff_id: string;
   last_student_id: string;

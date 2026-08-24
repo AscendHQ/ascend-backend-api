@@ -88,7 +88,9 @@ export const getPlatformMetrics = async (req: Request, res: Response) => {
     const schools = await OrganizationModel.find({
       _id: { $ne: ascendOrganization },
     })
-      .select("name description address academic_settings createdAt")
+      .select(
+        "name description address academic_settings is_active suspended_at suspension_reason createdAt",
+      )
       .sort({ createdAt: -1 })
       .lean();
     const schoolIds = schools.map(school => new ObjectId(school._id));
@@ -233,6 +235,9 @@ export const getPlatformMetrics = async (req: Request, res: Response) => {
       return {
         id,
         name: school.name,
+        is_active: school.is_active !== false,
+        suspended_at: school.suspended_at,
+        suspension_reason: school.suspension_reason,
         created_at: (school as any).createdAt,
         current_session: school.academic_settings?.current_session,
         current_term: school.academic_settings?.current_term,

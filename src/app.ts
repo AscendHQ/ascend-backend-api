@@ -63,8 +63,6 @@ import dashboardRouter from "./routes/dashboard";
 import subjectRegistrationRouter from "./routes/student_registration";
 import payrollRouter from "./routes/payroll";
 import permissionRouter from "./routes/permission";
-import bootstrapRouter from "./routes/bootstrap"; // TEMPORARY - remove after use
-
 import accountRouter from "./routes/account";
 import organizationRouter from "./routes/organization";
 import lessonRouter from "./routes/lesson";
@@ -99,7 +97,6 @@ app.use("/timetables", timetableRouter);
 app.use("/student-portals", studentPortalRouter);
 app.use("/teacher-portals", teacherPortalRouter);
 app.use("/organizations", organizationRouter);
-app.use("/bootstrap-admin", bootstrapRouter); // TEMPORARY - remove after use
 app.use("/accounts", accountRouter);
 
 app.use("*", (req: Request, res: Response) => {
