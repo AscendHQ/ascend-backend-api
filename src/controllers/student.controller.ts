@@ -3,15 +3,54 @@ import { parse } from "csv-parse/sync";
 import { ObjectId } from "mongodb";
 import { errorResponse, successResponse } from "../utils/responseHandler";
 import { ICustomInterface } from "../interface";
+import ClassModel from "../models/class";
+import OrganizationModel from "../models/organization";
+import StudentModel from "../models/student";
 import {
   AddStudent,
   DeleteStudentById,
   GetAllStudents,
   UpdateStudentById,
   GetNextStudentNumber,
-  BulkAddStudents,
 } from "../services/student.services";
 import { UpdateOrganization } from "../services/organization.services";
+
+const MAX_BULK_STUDENTS = 500;
+const REQUIRED_BULK_HEADERS = ["first_name", "last_name", "class_name"];
+
+type BulkStudentRow = Record<string, string>;
+type BulkImportError = {
+  row: number;
+  field: string;
+  message: string;
+};
+
+const cleanCell = (value: unknown) => String(value ?? "").trim();
+const normalizeHeader = (value: string) =>
+  cleanCell(value).toLowerCase().replace(/[\s-]+/g, "_");
+const normalizeClassName = (value: string) => cleanCell(value).toLowerCase();
+
+const incrementRegistrationNumber = (firstNumber: string, offset: number) => {
+  if (offset === 0) return firstNumber;
+
+  const match = firstNumber.match(/^(.*?)(\d+)$/);
+  if (!match) return `${firstNumber}-${offset + 1}`;
+
+  const nextNumber = String(Number(match[2]) + offset).padStart(
+    match[2].length,
+    "0",
+  );
+  return `${match[1]}${nextNumber}`;
+};
+
+const parseOptionalDate = (value: string) => {
+  if (!value) return undefined;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
+const isValidEmail = (value: string) =>
+  !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
 export const getAllStudents = async (req: Request, res: Response) => {
   try {
@@ -98,59 +137,218 @@ export const bulkAddStudent = async (req: Request, res: Response) => {
     const { account, file } = req;
 
     if (!file) {
-      return errorResponse(res, 400, "Upload a file");
+      return errorResponse(res, 400, "Choose a CSV file to import");
     }
 
-    const data = await parse(file.buffer, {
-      delimiter: ",",
-      from_line: 2,
-      relax_quotes: true,
+    let headers: string[] = [];
+    let rows: BulkStudentRow[];
+    try {
+      rows = parse(file.buffer, {
+        bom: true,
+        columns: (values: string[]) => {
+          headers = values.map(normalizeHeader);
+          return headers;
+        },
+        skip_empty_lines: true,
+        trim: true,
+      }) as BulkStudentRow[];
+    } catch {
+      return errorResponse(res, 400, "The CSV file could not be read");
+    }
+
+    const missingHeaders = REQUIRED_BULK_HEADERS.filter(
+      header => !headers.includes(header),
+    );
+    if (missingHeaders.length > 0) {
+      return errorResponse(res, 400, {
+        message: "The CSV template is missing required columns",
+        errors: missingHeaders.map(field => ({
+          row: 1,
+          field,
+          message: `Missing column: ${field}`,
+        })),
+      });
+    }
+    if (rows.length === 0) {
+      return errorResponse(res, 400, "The CSV file has no student rows");
+    }
+    if (rows.length > MAX_BULK_STUDENTS) {
+      return errorResponse(
+        res,
+        400,
+        `Import a maximum of ${MAX_BULK_STUDENTS} students at a time`,
+      );
+    }
+
+    const organization = await OrganizationModel.findById(
+      account.organization_id,
+    ).select("academic_settings");
+    const currentSession = organization?.academic_settings?.current_session;
+    const currentTerm = organization?.academic_settings?.current_term;
+    if (!currentSession || !currentTerm) {
+      return errorResponse(
+        res,
+        400,
+        "Set the current academic session and term before importing students",
+      );
+    }
+
+    const classes = await ClassModel.find({
+      organization: account.organization_id,
+      is_active: true,
+    })
+      .select("_id name")
+      .lean();
+    const classByName = new Map(
+      classes.map(item => [normalizeClassName(item.name), item._id]),
+    );
+
+    const firstGeneratedNumber = await GetNextStudentNumber(
+      account.organization_id,
+    );
+    let generatedCount = 0;
+    let lastGeneratedNumber = "";
+    const errors: BulkImportError[] = [];
+    const seenRegistrationNumbers = new Map<string, number>();
+    const candidates: Array<{
+      row: number;
+      registrationNumber: string;
+      student: Record<string, unknown>;
+    }> = [];
+
+    rows.forEach((row, index) => {
+      const rowNumber = index + 2;
+      const firstName = cleanCell(row.first_name);
+      const lastName = cleanCell(row.last_name);
+      const className = cleanCell(row.class_name);
+      const gender = cleanCell(row.gender).toLowerCase();
+      const guardianEmail = cleanCell(row.guardian_email);
+      const dob = parseOptionalDate(cleanCell(row.date_of_birth));
+      const classId = classByName.get(normalizeClassName(className));
+
+      if (!firstName) {
+        errors.push({ row: rowNumber, field: "first_name", message: "First name is required" });
+      }
+      if (!lastName) {
+        errors.push({ row: rowNumber, field: "last_name", message: "Last name is required" });
+      }
+      if (!className || !classId) {
+        errors.push({
+          row: rowNumber,
+          field: "class_name",
+          message: className ? `Class "${className}" was not found` : "Class name is required",
+        });
+      }
+      if (gender && !["male", "female"].includes(gender)) {
+        errors.push({ row: rowNumber, field: "gender", message: "Use male or female" });
+      }
+      if (dob === null) {
+        errors.push({
+          row: rowNumber,
+          field: "date_of_birth",
+          message: "Use a valid date such as 2012-09-24",
+        });
+      }
+      if (!isValidEmail(guardianEmail)) {
+        errors.push({
+          row: rowNumber,
+          field: "guardian_email",
+          message: "Enter a valid guardian email",
+        });
+      }
+
+      const suppliedNumber = cleanCell(row.registration_number);
+      const registrationNumber =
+        suppliedNumber ||
+        incrementRegistrationNumber(firstGeneratedNumber, generatedCount++);
+      if (!suppliedNumber) lastGeneratedNumber = registrationNumber;
+
+      const previousRow = seenRegistrationNumbers.get(registrationNumber);
+      if (previousRow) {
+        errors.push({
+          row: rowNumber,
+          field: "registration_number",
+          message: `Registration number duplicates row ${previousRow}`,
+        });
+      } else {
+        seenRegistrationNumbers.set(registrationNumber, rowNumber);
+      }
+
+      candidates.push({
+        row: rowNumber,
+        registrationNumber,
+        student: {
+          organization: account.organization_id,
+          registration_number: registrationNumber,
+          personal_information: {
+            first_name: firstName,
+            middle_name: cleanCell(row.middle_name),
+            last_name: lastName,
+            gender: gender || undefined,
+            dob: dob || undefined,
+            religion: cleanCell(row.religion),
+            nationality: cleanCell(row.nationality),
+          },
+          contact_information: {
+            residential_address: cleanCell(row.address),
+            contact_number: cleanCell(row.student_phone),
+          },
+          guardian_information: {
+            first_name: cleanCell(row.guardian_first_name),
+            last_name: cleanCell(row.guardian_last_name),
+            relationship_with_student: cleanCell(row.guardian_relationship),
+            contact_number: cleanCell(row.guardian_phone),
+            email: guardianEmail,
+          },
+          academic_details: {
+            class: classId,
+            previous_school: cleanCell(row.previous_school),
+            current_session: currentSession,
+            current_term: currentTerm,
+          },
+          is_active: true,
+          is_deleted: false,
+        },
+      });
     });
 
-    const students = data.map((each_student: any) => ({
-      organization: account.organization_id,
-      registration_number: each_student[0],
-      personal_information: {
-        first_name: each_student[1],
-        middle_name: each_student[2],
-        last_name: each_student[3],
-        gender: each_student[4],
-        dob: each_student[5],
-        religion: each_student[6],
-        nationality: each_student[7],
-      },
-      contact_information: {
-        residential_address: each_student[8],
-        contact_number: each_student[9],
-      },
-      guardian_information: {
-        first_name: each_student[10],
-        last_name: each_student[11],
-        relationship_with_student: each_student[12],
-        contact_number: each_student[13],
-        email: each_student[14],
-      },
-      academic_details: {
-        previous_school: each_student[15],
-      },
-      accommodation: {
-        block: each_student[16],
-        room: each_student[17],
-      },
-      medical_information: {
-        allergies: each_student[18],
-        emergency_contact: each_student[19],
-        medication: each_student[20],
-      },
-      additional_information: {
-        disabilities: each_student[21],
-        nature_of_disability: each_student[22],
-      },
-    }));
+    const registrationNumbers = candidates.map(item => item.registrationNumber);
+    const existingStudents = await StudentModel.find({
+      registration_number: { $in: registrationNumbers },
+    })
+      .select("registration_number")
+      .lean();
+    const existingNumbers = new Set(
+      existingStudents.map(item => item.registration_number),
+    );
+    candidates.forEach(candidate => {
+      if (existingNumbers.has(candidate.registrationNumber)) {
+        errors.push({
+          row: candidate.row,
+          field: "registration_number",
+          message: "Registration number already exists",
+        });
+      }
+    });
 
-    const response = await BulkAddStudents(students);
+    if (errors.length > 0) {
+      return errorResponse(res, 400, {
+        message: "Fix the listed rows and upload the file again",
+        errors,
+      });
+    }
 
-    return successResponse(res, 200, response);
+    await StudentModel.insertMany(candidates.map(item => item.student));
+    if (lastGeneratedNumber) {
+      await UpdateOrganization(account.organization_id, {
+        last_student_id: lastGeneratedNumber,
+      });
+    }
+
+    return successResponse(res, 201, {
+      imported: candidates.length,
+      message: `${candidates.length} students imported successfully`,
+    });
   } catch (error: any) {
     return errorResponse(res, 500, error.message);
   }
