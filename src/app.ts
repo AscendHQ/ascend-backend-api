@@ -6,11 +6,18 @@ import logger from "morgan";
 import cors from "cors";
 import { config } from "./config/env";
 
-const { NODE_ENV } = config;
+const { NODE_ENV, FRONTEND_APP_URL } = config;
 
 const app = express();
 
+const configuredFrontendOrigin = FRONTEND_APP_URL
+  ? FRONTEND_APP_URL.replace(/\/$/, "")
+  : "";
+
 let whitelist: string[] = [
+  configuredFrontendOrigin,
+  "https://ascend-africa.org",
+  "https://www.ascend-africa.org",
   "https://ascend.africa",
   "https://www.ascend.africa",
   "ascend.africa",
@@ -27,6 +34,8 @@ if (NODE_ENV !== "production") {
     "https://ascend-africa.vercel.app",
   ];
 }
+
+whitelist = whitelist.filter(Boolean);
 
 const corsOptions = {
   origin: (origin: any, callback: any) => {
