@@ -10,6 +10,7 @@ import {
   getStudentFinances,
   recordInvoicePayment,
 } from "../controllers/fee.controller";
+import { getFeeFinancialOverview } from "../controllers/fee_reporting.controller";
 import { checkPathPermission } from "../middlewares/checkPathPermission";
 import {
   createInvoicePaymentLink,
@@ -26,6 +27,7 @@ router.get("/public/invoices/:token", getPublicInvoice);
 router.post("/public/invoices/:token/initialize", initializePaystackPayment);
 router.get("/public/payments/:reference/verify", verifyPaystackPayment);
 
+router.get("/overview", auth, checkPathPermission, getFeeFinancialOverview);
 router.get("/structures", auth, checkPathPermission, getFeeStructures);
 router.post("/structures", auth, checkPathPermission, createFeeStructure);
 router.post(
