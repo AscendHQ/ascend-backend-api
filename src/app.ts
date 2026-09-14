@@ -83,6 +83,7 @@ import noticeRouter from "./routes/notice";
 import timetableRouter from "./routes/timetable";
 import studentPortalRouter from "./routes/student_portal";
 import teacherPortalRouter from "./routes/teacher_portal";
+import cbtRouter from "./routes/cbt";
 
 // use routers
 app.use("/auth", authRouter);
@@ -105,6 +106,7 @@ app.use("/communications", noticeRouter);
 app.use("/timetables", timetableRouter);
 app.use("/student-portals", studentPortalRouter);
 app.use("/teacher-portals", teacherPortalRouter);
+app.use("/cbt", cbtRouter);
 app.use("/organizations", organizationRouter);
 app.use("/accounts", accountRouter);
 
