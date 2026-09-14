@@ -6,8 +6,8 @@
   "author": "Innextinit <innextinit@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "yarn tsc && node ./dist/server",
-    "dev": "ts-node-dev --respawn --pretty --transpile-only ./src/server",
+    "start": "node api.js && yarn tsc && node ./dist/server",
+    "dev": "node api.js && ts-node-dev --respawn --pretty --transpile-only ./src/server",
     "typecheck": "tsc --noEmit",
     "check": "yarn typecheck"
   },
